@@ -434,7 +434,7 @@ async def get_result(callback: CallbackQuery,
                 pdf.ln()
 
             # Сохраняем PDF файл
-            pdf.output(f"report_safety_id_{callback.from_user.id}.pdf")
+            pdf.output(f"files/report_safety_id_{callback.from_user.id}.pdf")
 
             dohod_risk = 0
             rashod_risk = 0
@@ -517,7 +517,7 @@ async def get_result(callback: CallbackQuery,
                 pdf.ln()
 
             # Сохраняем PDF файл
-            pdf.output(f"report_risk_id_{callback.from_user.id}.pdf")
+            pdf.output(f"files/report_risk_id_{callback.from_user.id}.pdf")
 
             await callback.message.answer(text='По расчетам и Вашим вводным данным удалось составить две стратегии '
                                                'инвестирования в майнинг-оборудование - надежную и рискованную')
