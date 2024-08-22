@@ -395,7 +395,7 @@ async def get_result(callback: CallbackQuery,
             pdf.set_font('DejaVu', '', 9)
 
             # Добавляем таблицу в PDF
-            pdf.cell(200, 5, txt=f"Отчет на {now.strftime("%d-%m-%Y %H:%M")}", ln=True, align='L')
+            pdf.cell(200, 5, txt=f"Отчет на {now.strftime('%d-%m-%Y %H:%M')}", ln=True, align='L')
             pdf.cell(200, 5, txt=f"Бюджет: {int(fsm_result['budget'])} $", ln=True, align='L')
             pdf.cell(200, 5, txt=f"Доступный объем ЭЭ: {int(fsm_result['available_power'])} Вт*час", ln=True,
                      align='L')
@@ -478,7 +478,7 @@ async def get_result(callback: CallbackQuery,
             pdf.set_font('DejaVu', '', 9)
 
             # Добавляем таблицу в PDF
-            pdf.cell(200, 5, txt=f"Отчет на {now.strftime("%d-%m-%Y %H:%M")}", ln=True, align='L')
+            pdf.cell(200, 5, txt=f"Отчет на {now.strftime('%d-%m-%Y %H:%M')}", ln=True, align='L')
             pdf.cell(200, 5, txt=f"Бюджет: {int(fsm_result['budget'])} $", ln=True, align='L')
             pdf.cell(200, 5, txt=f"Доступный объем ЭЭ: {int(fsm_result['available_power'])} Вт*час", ln=True,
                      align='L')
@@ -611,7 +611,7 @@ async def get_result(callback: CallbackQuery,
             pdf.set_font('DejaVu', '', 9)
 
             # Добавляем таблицу в PDF
-            pdf.cell(200, 5, txt=f"Отчет на {now.strftime("%d-%m-%Y %H:%M")}", ln=True, align='L')
+            pdf.cell(200, 5, txt=f"Отчет на {now.strftime('%d-%m-%Y %H:%M')}", ln=True, align='L')
             pdf.cell(200, 5, txt=f"Бюджет: {int(fsm_result['budget'])} $", ln=True, align='L')
             pdf.cell(200, 5, txt=f"Доступный объем ЭЭ: {int(fsm_result['available_power'])} Вт*час", ln=True,
                      align='L')
@@ -727,7 +727,7 @@ async def get_result(callback: CallbackQuery,
             pdf.set_font('DejaVu', '', 9)
 
             # Добавляем таблицу в PDF
-            pdf.cell(200, 5, txt=f"Отчет на {now.strftime("%d-%m-%Y %H:%M")}", ln=True, align='L')
+            pdf.cell(200, 5, txt=f"Отчет на {now.strftime('%d-%m-%Y %H:%M')}", ln=True, align='L')
             pdf.cell(200, 5, txt=f"Бюджет: {int(fsm_result['budget'])} $", ln=True, align='L')
             pdf.cell(200, 5, txt=f"Доступный объем ЭЭ: {int(fsm_result['available_power'])} Вт*час", ln=True,
                      align='L')
@@ -886,7 +886,7 @@ async def get_result(callback: CallbackQuery,
             pdf.set_font('DejaVu', '', 9)
 
             # Добавляем таблицу в PDF
-            pdf.cell(200, 5, txt=f"Отчет на {now.strftime("%d-%m-%Y %H:%M")}", ln=True, align='L')
+            pdf.cell(200, 5, txt=f"Отчет на {now.strftime('%d-%m-%Y %H:%M')}", ln=True, align='L')
             pdf.cell(200, 5, txt=f"Бюджет: {int(fsm_result['budget'])} $", ln=True, align='L')
             pdf.cell(200, 5, txt=f"Доступный объем ЭЭ: {int(fsm_result['available_power'])} Вт*час", ln=True,
                      align='L')
