@@ -1476,8 +1476,7 @@ async def cheap_calculation_start(callback: CallbackQuery,
                                                        f"Себестоимость добычи 1 USDT для {asic[0][0]} - "
                                                        f"<b>${round(self_cost_1_usdt, 2)}</b>, и вот Ваш актуальный курс "
                                                        f"некоторых криптовалют:\n"
-                                                       f"{'\n'.join([f'<b>{ticket[0]}</b> ({ticket[1]}) - Ваша цена <b>${ticket[3]}</b> '
-                                                                     f'(при рыночной цене ${ticket[2]})' for ticket in currency_result])}")
+                                                       f"{'\n'.join([f'<b>{ticket[0]}</b> ({ticket[1]}) - Ваша цена <b>${ticket[3]}</b> (при рыночной цене ${ticket[2]})' for ticket in currency_result])}")
                     await callback.message.bot.send_chat_action(
                         chat_id=callback.from_user.id,
                         action=ChatAction.TYPING)
