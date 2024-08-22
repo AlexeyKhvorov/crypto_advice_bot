@@ -1351,29 +1351,36 @@ async def cheap_calculation_start(callback: CallbackQuery,
                                             'correct_hash_rate'])).values[0]
                     investments_for_100_usdt_per_day = (100 / (
                         ((df['fiat_profitability'] / df['specific_power_for_calculation'] * df['correct_hash_rate']) -
-                         (float(data['electricity_price']) * df['energy_consumption'] / 1000 * 24))) * df['price']).values[0]
+                         (float(data['electricity_price']) * df['energy_consumption'] / 1000 * 24))) * df[
+                                                            'price']).values[0]
                     exchange = ccxt.binance()
                     tickers = ['BTC', 'ETH', 'SOL', 'TON', 'BNB', 'APT', 'SUI', 'ARB', 'OP']
-                    tickers_full = ['Bitcoin', 'Ethereum', 'Solana', 'Toncoin', 'Binance Coin', 'Aptos', 'Sui', 'Arbitrum', 'Optimism']
+                    tickers_full = ['Bitcoin', 'Ethereum', 'Solana', 'Toncoin', 'Binance Coin', 'Aptos', 'Sui',
+                                    'Arbitrum', 'Optimism']
                     tickers_value = []
                     for ticker in tickers:
                         tickers_value.append(exchange.fetch_ticker(f'{ticker}/USDT')['last'])
                     tickers_cheap_value = [round(ticker_value * self_cost_1_usdt, 2) for ticker_value in tickers_value]
                     currency_result = list(zip(tickers, tickers_full, tickers_value, tickers_cheap_value))
+                    currency_string = '\n'.join([
+                                                    f"<b>{ticket[0]}</b> ({ticket[1]}) - Ваша цена <b>${ticket[3]}</b> (при рыночной цене ${ticket[2]})"
+                                                    for ticket in currency_result])
                     await callback.message.bot.send_chat_action(
                         chat_id=callback.from_user.id,
                         action=ChatAction.TYPING)
-                    await callback.message.answer(text=f"Перед тем, как показать результат, необходимо убедиться, что все "
-                                                       f"одинаково хорошо понимают эту стратегию. Приведу следующий "
-                                                       f"пример:")
-                    await callback.message.answer(text=f"За месяц работы Ваш майнер добыл криптовалюты на <b>$500</b>, затратив "
-                                                       f"при этом электроэнергии на <b>$100</b>. Потратив на производство всего "
-                                                       f"$100, Вы за $500 продаете Вашу криптовалюту на биржах и "
-                                                       f"покупаете ту криптовалюту, которую готовы держать в долгосрок, "
-                                                       f"потратив всего $100. Иными словами, себестоимость одного "
-                                                       f"добытого криптодоллара для Вас составила $0.2, и абсолютно любую "
-                                                       f"крипту Вы можете приобрести в <b>5 (!!!) раз</b> дешевле "
-                                                       f"рыночной цены. \nА теперь к Вашему примеру:")
+                    await callback.message.answer(
+                        text=f"Перед тем, как показать результат, необходимо убедиться, что все "
+                             f"одинаково хорошо понимают эту стратегию. Приведу следующий "
+                             f"пример:")
+                    await callback.message.answer(
+                        text=f"За месяц работы Ваш майнер добыл криптовалюты на <b>$500</b>, затратив "
+                             f"при этом электроэнергии на <b>$100</b>. Потратив на производство всего "
+                             f"$100, Вы за $500 продаете Вашу криптовалюту на биржах и "
+                             f"покупаете ту криптовалюту, которую готовы держать в долгосрок, "
+                             f"потратив всего $100. Иными словами, себестоимость одного "
+                             f"добытого криптодоллара для Вас составила $0.2, и абсолютно любую "
+                             f"крипту Вы можете приобрести в <b>5 (!!!) раз</b> дешевле "
+                             f"рыночной цены. \nА теперь к Вашему примеру:")
                     await callback.message.bot.send_chat_action(
                         chat_id=callback.from_user.id,
                         action=ChatAction.TYPING)
@@ -1384,7 +1391,7 @@ async def cheap_calculation_start(callback: CallbackQuery,
                                                        f"Себестоимость добычи 1 USDT для {asic[0][0]} - "
                                                        f"<b>${round(self_cost_1_usdt, 2)}</b>, и вот Ваш актуальный курс "
                                                        f"некоторых криптовалют:\n"
-                                                       f"{'\n'.join([f'<b>{ticket[0]}</b> ({ticket[1]}) - Ваша цена <b>${ticket[3]}</b> (при рыночной цене ${ticket[2]})' for ticket in currency_result])}")
+                                                       f"{currency_string}")
                     await callback.message.bot.send_chat_action(
                         chat_id=callback.from_user.id,
                         action=ChatAction.TYPING)
@@ -1393,10 +1400,11 @@ async def cheap_calculation_start(callback: CallbackQuery,
                         await callback.message.answer(
                             text=f"Сожалеем, но такая конфигурация не является окупаемой на текущий момент :(")
                     else:
-                        await callback.message.answer(text=f"P.S. Следует помнить, что Вы сможете покупать крипту <b>исключительно "
-                                                       f"на ту сумму</b>, которую Вы потратили на электроэнергию, и, чтобы, "
-                                                       f"к примеру, майнить в день на сумму $100, Вам придется "
-                                                       f"<b>инвестировать в майнинг-оборудование на сумму ${round(investments_for_100_usdt_per_day, 2)}!</b>")
+                        await callback.message.answer(
+                            text=f"P.S. Следует помнить, что Вы сможете покупать крипту <b>исключительно "
+                                 f"на ту сумму</b>, которую Вы потратили на электроэнергию, и, чтобы, "
+                                 f"к примеру, майнить в день на сумму $100, Вам придется "
+                                 f"<b>инвестировать в майнинг-оборудование на сумму ${round(investments_for_100_usdt_per_day, 2)}!</b>")
                     await callback.message.bot.send_chat_action(
                         chat_id=callback.from_user.id,
                         action=ChatAction.TYPING)
@@ -1415,9 +1423,10 @@ async def cheap_calculation_start(callback: CallbackQuery,
                              "комментарий»</b>.",
                         reply_markup=keyboards.fomo_end)
                 else:
-                    await callback.message.answer(text="К сожалению, на данный момент этот майнер не находится в продаже :(\n"
-                                                       "Попробуйте, пожалуйста, выбрать другое оборудование",
-                                         reply_markup=keyboards.return_to_main_menu)
+                    await callback.message.answer(
+                        text="К сожалению, на данный момент этот майнер не находится в продаже :(\n"
+                             "Попробуйте, пожалуйста, выбрать другое оборудование",
+                        reply_markup=keyboards.return_to_main_menu)
 
 
             finally:
@@ -1441,22 +1450,28 @@ async def cheap_calculation_start(callback: CallbackQuery,
                                             'correct_hash_rate'])).values[0]
                     investments_for_100_usdt_per_day = (100 / (
                         ((df['fiat_profitability'] / df['specific_power_for_calculation'] * df['correct_hash_rate']) -
-                         (float(data['electricity_price']) * df['energy_consumption'] / 1000 * 24))) * df['price']).values[0]
+                         (float(data['electricity_price']) * df['energy_consumption'] / 1000 * 24))) * df[
+                                                            'price']).values[0]
                     exchange = ccxt.binance()
                     tickers = ['BTC', 'ETH', 'SOL', 'TON', 'BNB', 'APT', 'SUI', 'ARB', 'OP']
-                    tickers_full = ['Bitcoin', 'Ethereum', 'Solana', 'Toncoin', 'Binance Coin', 'Aptos', 'Sui', 'Arbitrum',
+                    tickers_full = ['Bitcoin', 'Ethereum', 'Solana', 'Toncoin', 'Binance Coin', 'Aptos', 'Sui',
+                                    'Arbitrum',
                                     'Optimism']
                     tickers_value = []
                     for ticker in tickers:
                         tickers_value.append(exchange.fetch_ticker(f'{ticker}/USDT')['last'])
                     tickers_cheap_value = [round(ticker_value * self_cost_1_usdt, 2) for ticker_value in tickers_value]
                     currency_result = list(zip(tickers, tickers_full, tickers_value, tickers_cheap_value))
+                    currency_string = '\n'.join([
+                                                    f"<b>{ticket[0]}</b> ({ticket[1]}) - Ваша цена <b>${ticket[3]}</b> (при рыночной цене ${ticket[2]})"
+                                                    for ticket in currency_result])
                     await callback.message.bot.send_chat_action(
                         chat_id=callback.from_user.id,
                         action=ChatAction.TYPING)
-                    await callback.message.answer(text=f"Перед тем, как показать результат, необходимо убедиться, что все "
-                                                       f"одинаково хорошо понимают эту стратегию. Приведу следующий "
-                                                       f"пример:")
+                    await callback.message.answer(
+                        text=f"Перед тем, как показать результат, необходимо убедиться, что все "
+                             f"одинаково хорошо понимают эту стратегию. Приведу следующий "
+                             f"пример:")
                     await callback.message.answer(
                         text=f"За месяц работы Ваш майнер добыл криптовалюты на <b>$500</b>, затратив "
                              f"при этом электроэнергии на <b>$100</b>. Потратив на производство всего "
@@ -1476,7 +1491,7 @@ async def cheap_calculation_start(callback: CallbackQuery,
                                                        f"Себестоимость добычи 1 USDT для {asic[0][0]} - "
                                                        f"<b>${round(self_cost_1_usdt, 2)}</b>, и вот Ваш актуальный курс "
                                                        f"некоторых криптовалют:\n"
-                                                       f"{'\n'.join([f'<b>{ticket[0]}</b> ({ticket[1]}) - Ваша цена <b>${ticket[3]}</b> (при рыночной цене ${ticket[2]})' for ticket in currency_result])}")
+                                                       f"{currency_string}")
                     await callback.message.bot.send_chat_action(
                         chat_id=callback.from_user.id,
                         action=ChatAction.TYPING)
@@ -1486,10 +1501,10 @@ async def cheap_calculation_start(callback: CallbackQuery,
                             text=f"Сожалеем, но такая конфигурация не является окупаемой на текущий момент :(")
                     else:
                         await callback.message.answer(
-                        text=f"P.S. Следует помнить, что Вы сможете покупать крипту <b>исключительно "
-                             f"на ту сумму</b>, которую Вы потратили на электроэнергию, и, чтобы, "
-                             f"к примеру, майнить в день на сумму $100, Вам придется "
-                             f"<b>инвестировать в майнинг-оборудование на сумму ${round(investments_for_100_usdt_per_day, 2)}!</b>")
+                            text=f"P.S. Следует помнить, что Вы сможете покупать крипту <b>исключительно "
+                                 f"на ту сумму</b>, которую Вы потратили на электроэнергию, и, чтобы, "
+                                 f"к примеру, майнить в день на сумму $100, Вам придется "
+                                 f"<b>инвестировать в майнинг-оборудование на сумму ${round(investments_for_100_usdt_per_day, 2)}!</b>")
                     time.sleep(3)
                     await callback.message.bot.send_chat_action(
                         chat_id=callback.from_user.id,
@@ -1508,13 +1523,14 @@ async def cheap_calculation_start(callback: CallbackQuery,
                              "комментарий»</b>.",
                         reply_markup=keyboards.fomo_end)
                 else:
-                    await callback.message.answer(text="К сожалению, на данный момент этот майнер не находится в продаже :(\n"
-                                                       "Попробуйте, пожалуйста, выбрать другое оборудование",
-                                         reply_markup=keyboards.return_to_main_menu)
+                    await callback.message.answer(
+                        text="К сожалению, на данный момент этот майнер не находится в продаже :(\n"
+                             "Попробуйте, пожалуйста, выбрать другое оборудование",
+                        reply_markup=keyboards.return_to_main_menu)
 
 
             finally:
-                # Закрываем соединение и тест
+                # Закрываем соединение
                 db.close()
     else:
         await callback.message.answer(text='Что-то пошло не так. Попробуйте еще раз',
