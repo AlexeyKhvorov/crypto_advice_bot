@@ -207,15 +207,15 @@ def cleaning_files():
         print(f'Папка {folder_path} не найдена.')
 
 
-# def writing_logs(datetime_log, tg_id, action):
-#     db_connection = pymysql.connect(host=config.host_logs, database=config.database_logs,
-#                                     user=config.user_logs, password=config.password_logs,
-#                                     port=config.port_number_logs)
-#     cursor = db_connection.cursor()
-#
-#     insert_query = f"INSERT INTO mining_logs VALUES ('{datetime_log}', '{tg_id}', '{action}');"
-#     cursor.execute(insert_query)
-#     # Фиксируем изменения и закрываем соединение с базой данных
-#     db_connection.commit()
-#     cursor.close()
-#     db_connection.close()
+def writing_logs(datetime_log, tg_id, action):
+    db_connection = pymysql.connect(host=config.host_logs, database=config.database_logs,
+                                    user=config.user_logs, password=config.password_logs,
+                                    port=config.port_number_logs)
+    cursor = db_connection.cursor()
+
+    insert_query = f"INSERT INTO mining_logs VALUES ('{datetime_log}', '{tg_id}', '{action}');"
+    cursor.execute(insert_query)
+    # Фиксируем изменения и закрываем соединение с базой данных
+    db_connection.commit()
+    cursor.close()
+    db_connection.close()
