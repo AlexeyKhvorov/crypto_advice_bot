@@ -1425,8 +1425,7 @@ async def cheap_calculation_start(callback: CallbackQuery,
                     if self_cost_1_usdt > 1:
                         await callback.message.answer(
                             text=f"Сожалеем, но такая конфигурация не является окупаемой на текущий момент :(")
-                        functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id,
-                                               'cheap_coins')
+                        functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'cheap_coins_result')
                     else:
                         await callback.message.answer(
                             text=f"P.S. Следует понимать, что данная стратегия работает <b>исключительно до того момента</b>, "
@@ -1437,9 +1436,7 @@ async def cheap_calculation_start(callback: CallbackQuery,
                                  f"$5 в месяц, то нетрудно догадаться, какое количество крипты Вам удастся купить "
                                  f"(<u>спойлер: очень маленькое</u>).\n "
                                  f"Поэтому предлагаю добавить еще совсем немного математики, чтобы Вы поняли порядок "
-                                 f"чисел:")
-                        functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id,
-                                               'cheap_coins_result')
+                                 f"чисел")
                         await callback.message.bot.send_chat_action(
                             chat_id=callback.from_user.id,
                             action=ChatAction.TYPING)
@@ -1476,6 +1473,7 @@ async def cheap_calculation_start(callback: CallbackQuery,
                              "пожелания, идеи и замечания по боту и дашборду по кнопке <b>«Оставить "
                              "комментарий»</b>.",
                         reply_markup=keyboards.fomo_end)
+                    functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id,'cheap_coins_result')
                 else:
                     await callback.message.answer(
                         text="К сожалению, на данный момент этот майнер не находится в продаже :(\n"
@@ -1555,8 +1553,7 @@ async def cheap_calculation_start(callback: CallbackQuery,
                     if self_cost_1_usdt > 1:
                         await callback.message.answer(
                             text=f"Сожалеем, но такая конфигурация не является окупаемой на текущий момент :(")
-                        functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id,
-                                               'cheap_coins_result')
+                        functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'cheap_coins_result')
                     else:
                         await callback.message.answer(
                             text=f"P.S. Следует понимать, что данная стратегия работает <b>исключительно до того момента</b>, "
@@ -1568,8 +1565,6 @@ async def cheap_calculation_start(callback: CallbackQuery,
                                  f"(<u>спойлер: очень маленькое</u>).\n "
                                  f"Поэтому предлагаю добавить еще совсем немного математики, чтобы Вы поняли порядок "
                                  f"чисел:")
-                        functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id,
-                                               'cheap_coins_result')
                         time.sleep(3)
                         await callback.message.answer(
                             text=f"Для того, чтобы в месяц этим способом покупать крипты, например, на $1000 "
@@ -1593,6 +1588,7 @@ async def cheap_calculation_start(callback: CallbackQuery,
                              "пожелания, идеи и замечания по боту и дашборду по кнопке <b>«Оставить "
                              "комментарий»</b>.",
                         reply_markup=keyboards.fomo_end)
+                    functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'cheap_coins_result')
                 else:
                     await callback.message.answer(
                         text="К сожалению, на данный момент этот майнер не находится в продаже :(\n"
