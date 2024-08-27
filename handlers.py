@@ -45,17 +45,18 @@ async def cmd_start(message: Message,
 @router.callback_query(F.data == 'return_to_main_menu')
 async def main_menu(callback: CallbackQuery,
                     state: FSMContext):
-    await callback.message.answer(text="Добро пожаловать в <b>crypto_advice_bot</b>! 👋\n\nПо кнопке <b>Сделать расчет</b> ✍️ "
-                              "Вы можете посчитать наиболее выгодные инвестиции в майнинг-оборудование "
-                              "конкретно для Вас и Ваших условий. \n\nПо кнопке "
-                              "<b>Сколько я уже мог заработать ❓</b> Вы можете увидеть, сколько могли заработать, зайди Вы "
-                              "в майнинг раньше.\n\n"
-                              "По кнопке <b>Как купить монеты дешевле рынка 🛒</b> Вы сможете увидеть одну из стратегий "
-                              "майнинга крипты, позволяющая покупать любой актив на рынке с большим дисконтом.\n\n"
-                              "Также можно ознакомиться с подробным дашбордом по "
-                              "майнинг-оборудованию на платформе <b>Yandex DataLens</b> 📊.\n\n"
-                              "Что Вы хотите сделать?",
-                         reply_markup=keyboards.main_menu)
+    await callback.message.answer(
+        text="Добро пожаловать в <b>crypto_advice_bot</b>! 👋\n\nПо кнопке <b>Сделать расчет</b> ✍️ "
+             "Вы можете посчитать наиболее выгодные инвестиции в майнинг-оборудование "
+             "конкретно для Вас и Ваших условий. \n\nПо кнопке "
+             "<b>Сколько я уже мог заработать ❓</b> Вы можете увидеть, сколько могли заработать, зайди Вы "
+             "в майнинг раньше.\n\n"
+             "По кнопке <b>Как купить монеты дешевле рынка 🛒</b> Вы сможете увидеть одну из стратегий "
+             "майнинга крипты, позволяющая покупать любой актив на рынке с большим дисконтом.\n\n"
+             "Также можно ознакомиться с подробным дашбордом по "
+             "майнинг-оборудованию на платформе <b>Yandex DataLens</b> 📊.\n\n"
+             "Что Вы хотите сделать?",
+        reply_markup=keyboards.main_menu)
     await state.clear()
 
 
@@ -92,7 +93,8 @@ async def calculation_budget_fail(message: Message,
 async def calculation_available_power_success(message: Message,
                                               state: FSMContext):
     await state.update_data(available_power=message.text)
-    await message.answer(text="Укажите Вашу цену ⚡ электроэнергии (в 💲) - через точку \n(в среднем в РФ цена за ЭЭ <b>0.02 - 0.07</b> $/кВт)")
+    await message.answer(
+        text="Укажите Вашу цену ⚡ электроэнергии (в 💲) - через точку \n(в среднем в РФ цена за ЭЭ <b>0.02 - 0.07</b> $/кВт)")
     await state.set_state(fsm.GetUserData.insert_electro_price)
 
 
@@ -557,11 +559,13 @@ async def get_result(callback: CallbackQuery,
                                                f" - <b>$ {int(rashod_risk)}</b>\n"
                                                f"Ежемесячная прибыль - <b>$ {int(dohod_risk - rashod_risk)}</b>\n"
                                                f"Окупаемость проекта - <b>{round(float(summa_oborud_risk / (dohod_risk - rashod_risk)), 1)} мес.</b>\n")
-            functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'calculation_result')
-            await callback.message.answer(text='<b>Помните, что это - теоретический расчет, сделанный при текущем курсе '
-                                               'криптовалют, а также при текущей сложности сети. \nХалвинги криптовалют '
-                                               'также '
-                                               'не учитаны при расчетах.</b>')
+            functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id,
+                                   'calculation_result')
+            await callback.message.answer(
+                text='<b>Помните, что это - теоретический расчет, сделанный при текущем курсе '
+                     'криптовалют, а также при текущей сложности сети. \nХалвинги криптовалют '
+                     'также '
+                     'не учитаны при расчетах.</b>')
             await callback.message.answer(
                 text='С более полной информацией об оборудовании Вы можете ознакомиться в моем '
                      'регулярно обновляющемся дашборде: '
@@ -674,7 +678,8 @@ async def get_result(callback: CallbackQuery,
                                                f" - <b>$ {int(rashod)}</b>\n"
                                                f"Ежемесячная прибыль - <b>$ {int(dohod - rashod)}</b>\n"
                                                f"Окупаемость проекта - <b>{round(float(summa_oborud / (dohod - rashod)), 1)} мес.</b>\n")
-            functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'calculation_result')
+            functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id,
+                                   'calculation_result')
             await callback.message.answer(text='Помните, что это - теоретический расчет, сделанный при текущем курсе '
                                                'криптовалют, а также при текущей сложности сети. Халвинги криптовалют '
                                                'также '
@@ -791,7 +796,8 @@ async def get_result(callback: CallbackQuery,
                                                f" - <b>$ {int(rashod)}</b>\n"
                                                f"Ежемесячная прибыль - <b>$ {int(dohod - rashod)}</b>\n"
                                                f"Окупаемость проекта - <b>{round(float(summa_oborud / (dohod - rashod)), 1)} мес.</b>\n")
-            functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'calculation_result')
+            functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id,
+                                   'calculation_result')
             await callback.message.answer(text='Помните, что это - теоретический расчет, сделанный при текущем курсе '
                                                'криптовалют, а также при текущей сложности сети. Халвинги криптовалют '
                                                'также '
@@ -950,7 +956,8 @@ async def get_result(callback: CallbackQuery,
                                                f" - <b>$ {int(rashod)}</b>\n"
                                                f"Ежемесячная прибыль - <b>$ {int(dohod - rashod)}</b>\n"
                                                f"Окупаемость проекта - <b>{round(float(summa_oborud / (dohod - rashod)), 1)} мес.</b>\n")
-            functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'calculation_result')
+            functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id,
+                                   'calculation_result')
             await callback.message.answer(text='Помните, что это - теоретический расчет, сделанный при текущем курсе '
                                                'криптовалют, а также при текущей сложности сети. Халвинги криптовалют '
                                                'также '
@@ -1055,7 +1062,8 @@ async def fomo_insert_manual_date_check(message: Message,
 @router.callback_query(F.data.in_(['early_date', 'manual_date_confirm_button']))
 async def fomo_insert_electricity_price(callback: CallbackQuery,
                                         state: FSMContext):
-    await callback.message.answer(text='Укажите Вашу цену ⚡ электроэнергии (в 💲) - через точку \n(в среднем в РФ цена за ЭЭ <b>0.02 - 0.07</b> $/кВт)')
+    await callback.message.answer(
+        text='Укажите Вашу цену ⚡ электроэнергии (в 💲) - через точку \n(в среднем в РФ цена за ЭЭ <b>0.02 - 0.07</b> $/кВт)')
     await state.set_state(fsm.Fomo.insert_electricity)
 
 
@@ -1310,7 +1318,8 @@ async def cheap_insert_electro(callback: CallbackQuery,
                                callback_data: callback_factory.CheapAsicsList,
                                state: FSMContext):
     await state.update_data(asic=callback_data.item)
-    await callback.message.answer(text='Укажите Вашу цену ⚡ электроэнергии (в 💲) - через точку \n(в среднем в РФ цена за ЭЭ <b>0.02 - 0.07</b> $/кВт)')
+    await callback.message.answer(
+        text='Укажите Вашу цену ⚡ электроэнергии (в 💲) - через точку \n(в среднем в РФ цена за ЭЭ <b>0.02 - 0.07</b> $/кВт)')
     await state.set_state(fsm.CheapCoins.insert_electricity)
 
 
@@ -1374,8 +1383,8 @@ async def cheap_calculation_start(callback: CallbackQuery,
                     tickers_cheap_value = [round(ticker_value * self_cost_1_usdt, 2) for ticker_value in tickers_value]
                     currency_result = list(zip(tickers, tickers_full, tickers_value, tickers_cheap_value))
                     currency_string = '\n'.join([
-                                                    f"<b>{ticket[0]}</b> ({ticket[1]}) - Ваша цена <b>${ticket[3]}</b> (по рынку ${ticket[2]})"
-                                                    for ticket in currency_result])
+                        f"<b>{ticket[0]}</b> ({ticket[1]}) - Ваша цена <b>${ticket[3]}</b> (по рынку ${ticket[2]})"
+                        for ticket in currency_result])
                     await callback.message.bot.send_chat_action(
                         chat_id=callback.from_user.id,
                         action=ChatAction.TYPING)
@@ -1426,10 +1435,11 @@ async def cheap_calculation_start(callback: CallbackQuery,
                                  f"<b>Больше устройств -> больше плата за электроэнергию -> больше дешевых монет для продажи</b>.\n"
                                  f"Если в Вашем арсенале имеется одно устройство мощностью 100 Ватт и Вы платите за электричество, скажем, "
                                  f"$5 в месяц, то нетрудно догадаться, какое количество крипты Вам удастся купить "
-                                 f"(<u>спойлер: очень маленькое</u>).\n"
-                                 f"Поэтому предлагаю добавить еще совсем немного математики, чтобы Вы поняли порядок чисел:")
+                                 f"(<u>спойлер: очень маленькое</u>).\n "
+                                 f"Поэтому предлагаю добавить еще совсем немного математики, чтобы Вы поняли порядок "
+                                 f"чисел:")
                         functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id,
-                                           'cheap_coins_result')
+                                               'cheap_coins_result')
                         await callback.message.bot.send_chat_action(
                             chat_id=callback.from_user.id,
                             action=ChatAction.TYPING)
@@ -1503,8 +1513,8 @@ async def cheap_calculation_start(callback: CallbackQuery,
                     tickers_cheap_value = [round(ticker_value * self_cost_1_usdt, 2) for ticker_value in tickers_value]
                     currency_result = list(zip(tickers, tickers_full, tickers_value, tickers_cheap_value))
                     currency_string = '\n'.join([
-                                                    f"<b>{ticket[0]}</b> ({ticket[1]}) - Ваша цена <b>${ticket[3]}</b> (по рынку ${ticket[2]})"
-                                                    for ticket in currency_result])
+                        f"<b>{ticket[0]}</b> ({ticket[1]}) - Ваша цена <b>${ticket[3]}</b> (по рынку ${ticket[2]})"
+                        for ticket in currency_result])
                     await callback.message.bot.send_chat_action(
                         chat_id=callback.from_user.id,
                         action=ChatAction.TYPING)
@@ -1555,16 +1565,17 @@ async def cheap_calculation_start(callback: CallbackQuery,
                                  f"<b>Больше устройств -> больше плата за электроэнергию -> больше дешевых монет для продажи</b>.\n"
                                  f"Если в Вашем арсенале имеется одно устройство мощностью 100 Ватт и Вы платите за электричество, скажем, "
                                  f"$5 в месяц, то нетрудно догадаться, какое количество крипты Вам удастся купить "
-                                 f"(<u>спойлер: очень маленькое</u>).\n"
-                                 f"Поэтому предлагаю добавить еще совсем немного математики, чтобы Вы поняли порядок чисел:")
+                                 f"(<u>спойлер: очень маленькое</u>).\n "
+                                 f"Поэтому предлагаю добавить еще совсем немного математики, чтобы Вы поняли порядок "
+                                 f"чисел:")
                         functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id,
                                                'cheap_coins_result')
                         time.sleep(3)
                         await callback.message.answer(
                             text=f"Для того, чтобы в месяц этим способом покупать крипты, например, на $1000 "
-                                 f"(для Вас это ${round(1000*round(self_cost_1_usdt, 2), 0)}) Вам необходимо купить асиков {asic[0][0]}"
-                                 f" на сумму ${round(((1000*round(self_cost_1_usdt, 2) / (float(data['electricity_price']) * df['energy_consumption'] * 720 / 1000)) * df['price']).values[0], 0)}.\n"
-                                 f"<b>Это порядка {round((1000*round(self_cost_1_usdt, 2) / (float(data['electricity_price']) * df['energy_consumption'] * 720 / 1000)).values[0], 1)} асиков</b>.")
+                                 f"(для Вас это ${round(1000 * round(self_cost_1_usdt, 2), 0)}) Вам необходимо купить асиков {asic[0][0]}"
+                                 f" на сумму ${round(((1000 * round(self_cost_1_usdt, 2) / (float(data['electricity_price']) * df['energy_consumption'] * 720 / 1000)) * df['price']).values[0], 0)}.\n"
+                                 f"<b>Это порядка {round((1000 * round(self_cost_1_usdt, 2) / (float(data['electricity_price']) * df['energy_consumption'] * 720 / 1000)).values[0], 1)} асиков</b>.")
                         time.sleep(3)
                     await callback.message.bot.send_chat_action(
                         chat_id=callback.from_user.id,
