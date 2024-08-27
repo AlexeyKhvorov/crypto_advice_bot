@@ -38,7 +38,7 @@ async def cmd_start(message: Message,
                               "майнинг-оборудованию на платформе <b>Yandex DataLens</b> 📊.\n\n"
                               "Что Вы хотите сделать?",
                          reply_markup=keyboards.main_menu)
-    # functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), message.from_user.id, 'start')
+    functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), message.from_user.id, 'start')
     await state.clear()
 
 
@@ -63,7 +63,7 @@ async def main_menu(callback: CallbackQuery,
 @router.callback_query(F.data == 'calculation')
 async def calculation(callback: CallbackQuery,
                       state: FSMContext):
-    # functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'calculation')
+    functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'calculation')
     await callback.message.answer(text="Окей, каким бюджетом Вы располагаете (в 💲)? \nВведите целое "
                                        "неотрицательное число")
     await state.set_state(fsm.GetUserData.insert_budget)
@@ -559,7 +559,7 @@ async def get_result(callback: CallbackQuery,
                                                f" - <b>$ {int(rashod_risk)}</b>\n"
                                                f"Ежемесячная прибыль - <b>$ {int(dohod_risk - rashod_risk)}</b>\n"
                                                f"Окупаемость проекта - <b>{round(float(summa_oborud_risk / (dohod_risk - rashod_risk)), 1)} мес.</b>\n")
-            # functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'calculation_result')
+            functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'calculation_result')
             await callback.message.answer(
                 text='<b>Помните, что это - теоретический расчет, сделанный при текущем курсе '
                      'криптовалют, а также при текущей сложности сети. \nХалвинги криптовалют '
@@ -677,7 +677,7 @@ async def get_result(callback: CallbackQuery,
                                                f" - <b>$ {int(rashod)}</b>\n"
                                                f"Ежемесячная прибыль - <b>$ {int(dohod - rashod)}</b>\n"
                                                f"Окупаемость проекта - <b>{round(float(summa_oborud / (dohod - rashod)), 1)} мес.</b>\n")
-            # functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id,'calculation_result')
+            functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id,'calculation_result')
             await callback.message.answer(text='Помните, что это - теоретический расчет, сделанный при текущем курсе '
                                                'криптовалют, а также при текущей сложности сети. Халвинги криптовалют '
                                                'также '
@@ -794,7 +794,7 @@ async def get_result(callback: CallbackQuery,
                                                f" - <b>$ {int(rashod)}</b>\n"
                                                f"Ежемесячная прибыль - <b>$ {int(dohod - rashod)}</b>\n"
                                                f"Окупаемость проекта - <b>{round(float(summa_oborud / (dohod - rashod)), 1)} мес.</b>\n")
-            # functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'calculation_result')
+            functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'calculation_result')
             await callback.message.answer(text='Помните, что это - теоретический расчет, сделанный при текущем курсе '
                                                'криптовалют, а также при текущей сложности сети. Халвинги криптовалют '
                                                'также '
@@ -953,7 +953,7 @@ async def get_result(callback: CallbackQuery,
                                                f" - <b>$ {int(rashod)}</b>\n"
                                                f"Ежемесячная прибыль - <b>$ {int(dohod - rashod)}</b>\n"
                                                f"Окупаемость проекта - <b>{round(float(summa_oborud / (dohod - rashod)), 1)} мес.</b>\n")
-            # functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'calculation_result')
+            functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'calculation_result')
             await callback.message.answer(text='Помните, что это - теоретический расчет, сделанный при текущем курсе '
                                                'криптовалют, а также при текущей сложности сети. Халвинги криптовалют '
                                                'также '
@@ -974,7 +974,7 @@ async def get_result(callback: CallbackQuery,
 @router.callback_query(F.data == 'fomo')
 async def fomo_start(callback: CallbackQuery,
                      state: FSMContext):
-    # functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'fomo')
+    functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'fomo')
     await callback.message.answer(text="Добро пожаловать в FOMO-раздел!\nЗдесь Вы сможете наглядно увидеть <b>(на "
                                        "реальных данных)</b>, сколько денег Вы уже успели потерять, пока Вы думаете, "
                                        "стоит ли заходить в майнинг. Расчеты сделаны уже <b>по фактической сложности "
@@ -1153,7 +1153,7 @@ async def fomo_calculation_start(callback: CallbackQuery,
                 else:
                     await callback.message.answer(
                         text=f"Расчетная окупаемость по текущему курсу 💹 составит <b>{(days_of_mining / (current_percent_payback / 100) / 30).quantize(Decimal('0.0'), rounding=ROUND_HALF_EVEN)} мес.</b>")
-                # functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id,'fomo_result')
+                functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id,'fomo_result')
                 await callback.message.answer(
                     text="Также не следует забывать, что <b>сложность майнинга ⛏️ стремительно растет</b> по"
                          " всем популярным алгоритам, и <b>то количество крипты, которое Вы могли бы "
@@ -1223,7 +1223,7 @@ async def fomo_calculation_start(callback: CallbackQuery,
                 else:
                     await callback.message.answer(
                         text=f"Расчетная окупаемость по текущему курсу составит <b>{(days_of_mining / (current_percent_payback / 100) / 30).quantize(Decimal('0.0'), rounding=ROUND_HALF_EVEN)} мес.</b>")
-                # functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'fomo_result')
+                functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'fomo_result')
                 await callback.message.answer(
                     text="Также не следует забывать, что <b>сложность майнинга ⛏️ стремительно растет</b> по"
                          " всем популярным алгоритам, и <b>то количество крипты, которое Вы могли бы "
@@ -1252,7 +1252,7 @@ async def fomo_calculation_start(callback: CallbackQuery,
 @router.callback_query(F.data == 'feedback')
 async def feedback(callback: CallbackQuery,
                    state: FSMContext):
-    # functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'feedback')
+    functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'feedback')
     await callback.message.answer(f"Пожалуйста, введите Ваши сообщение 💬 (можно скринами, текстом, стикерами). \n"
                                   f"Если хотите получить ответ на сообщение - оставьте также свой <b>@username</b>")
     await state.set_state(fsm.Feedback.insert_feedback)
@@ -1271,7 +1271,7 @@ async def feedback_success(message: Message,
 @router.callback_query(F.data == 'cheap_coins')
 async def cheap_start(callback: CallbackQuery,
                       state: FSMContext):
-    # functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'cheap_coins')
+    functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'cheap_coins')
     await callback.message.answer(text="Хотите ли Вы купить монеты дешевле, чем они стоят на рынке? 🤔\n"
                                        "Благодаря майнингу у Вас есть такая возможность! \nДавайте сделаем небольшой "
                                        "расчет, и Вы сами в этом убедитесь! 🛒\n"
@@ -1419,7 +1419,7 @@ async def cheap_calculation_start(callback: CallbackQuery,
                     if self_cost_1_usdt > 1:
                         await callback.message.answer(
                             text=f"Сожалеем, но такая конфигурация не является окупаемой на текущий момент :(")
-                        # functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'cheap_coins_result')
+                        functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'cheap_coins_result')
                     else:
                         # await callback.message.answer(
                         #     text=f"P.S. Следует понимать, что данная стратегия работает <b>исключительно до того момента</b>, "
@@ -1466,7 +1466,7 @@ async def cheap_calculation_start(callback: CallbackQuery,
                              "пожелания, идеи и замечания по боту и дашборду по кнопке <b>«Оставить "
                              "комментарий»</b>.",
                         reply_markup=keyboards.fomo_end)
-                    # functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id,'cheap_coins_result')
+                    functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id,'cheap_coins_result')
                 else:
                     await callback.message.answer(
                         text="К сожалению, на данный момент этот майнер не находится в продаже :(\n"
@@ -1546,7 +1546,7 @@ async def cheap_calculation_start(callback: CallbackQuery,
                     if self_cost_1_usdt > 1:
                         await callback.message.answer(
                             text=f"Сожалеем, но такая конфигурация не является окупаемой на текущий момент :(")
-                        # functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'cheap_coins_result')
+                        functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'cheap_coins_result')
                     else:
                         # await callback.message.answer(
                         #     text=f"P.S. Следует понимать, что данная стратегия работает <b>исключительно до того момента</b>, "
@@ -1581,7 +1581,7 @@ async def cheap_calculation_start(callback: CallbackQuery,
                              "пожелания, идеи и замечания по боту и дашборду по кнопке <b>«Оставить "
                              "комментарий»</b>.",
                         reply_markup=keyboards.fomo_end)
-                    # functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'cheap_coins_result')
+                    functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'cheap_coins_result')
                 else:
                     await callback.message.answer(
                         text="К сожалению, на данный момент этот майнер не находится в продаже :(\n"
