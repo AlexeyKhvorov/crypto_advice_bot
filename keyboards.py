@@ -5,17 +5,17 @@ import callback_factory
 import functions
 
 # Кнопки главного меню
-calculation = InlineKeyboardButton(text='Сделать расчет майнинг-оборудования', callback_data='calculation')
-fomo = InlineKeyboardButton(text='Сколько я мог заработать', callback_data='fomo')
-cheap_coins = InlineKeyboardButton(text='Как купить монеты дешевле рынка?', callback_data='cheap_coins')
-dashboard = InlineKeyboardButton(text='Перейти в подробный дашборд', url='https://datalens.yandex/kth6k05xlg9c8')
-feedback_button = InlineKeyboardButton(text='Оставить комментарий', callback_data='feedback')
+calculation = InlineKeyboardButton(text='Сделать расчет майнинг-оборудования ✍️', callback_data='calculation')
+fomo = InlineKeyboardButton(text='Сколько я мог заработать ❓', callback_data='fomo')
+cheap_coins = InlineKeyboardButton(text='Как купить монеты дешевле рынка? 🛒', callback_data='cheap_coins')
+dashboard = InlineKeyboardButton(text='Перейти в подробный дашборд 📊', url='https://datalens.yandex/kth6k05xlg9c8')
+feedback_button = InlineKeyboardButton(text='Оставить комментарий 💬', callback_data='feedback')
 return_to_main_menu_button = InlineKeyboardButton(text='Вернуться в главное меню', callback_data='return_to_main_menu')
 
 # Кнопки целей пользователя
-quick_payback = InlineKeyboardButton(text='Как можно быстрее окупиться', callback_data='quick_payback')
-highly_profit = InlineKeyboardButton(text='Иметь максимально возможный месячный доход', callback_data='highly_profit')
-less_electricity_pay = InlineKeyboardButton(text='Меньше платить за электроэнергию',
+quick_payback = InlineKeyboardButton(text='Как можно быстрее окупиться 💸', callback_data='quick_payback')
+highly_profit = InlineKeyboardButton(text='Иметь максимально возможный месячный доход 💰', callback_data='highly_profit')
+less_electricity_pay = InlineKeyboardButton(text='Меньше платить за электроэнергию ⚡',
                                             callback_data='less_electricity_pay')
 
 # Кнопки добываемых монет
@@ -29,19 +29,19 @@ CKB = InlineKeyboardButton(text='Nervos Network', callback_data='CKB')
 KDA = InlineKeyboardButton(text='Kadena', callback_data='KDA')
 HNS = InlineKeyboardButton(text='Handshake', callback_data='HNS')
 ALPH = InlineKeyboardButton(text='Alephium', callback_data='ALPH')
-Diversification = InlineKeyboardButton(text='Хочу диверсифицировать риски и майнить несколько монет',
+Diversification = InlineKeyboardButton(text='Диверсификация (несколько монет)',
                                        callback_data='Diversification')
 
 # Кнопки 380 В да или нет для биткоина
-btc_380_yes = InlineKeyboardButton(text='Да', callback_data='btc_380_yes')
-btc_380_no = InlineKeyboardButton(text='Нет', callback_data='btc_380_no')
+btc_380_yes = InlineKeyboardButton(text='Да ✅', callback_data='btc_380_yes')
+btc_380_no = InlineKeyboardButton(text='Нет ❌', callback_data='btc_380_no')
 
 # Кнопки для гидроасиков да или нет для биткоина
-btc_hydro_yes = InlineKeyboardButton(text='Да', callback_data='btc_hydro_yes')
-btc_hydro_no = InlineKeyboardButton(text='Нет', callback_data='btc_hydro_no')
+btc_hydro_yes = InlineKeyboardButton(text='Да ✅', callback_data='btc_hydro_yes')
+btc_hydro_no = InlineKeyboardButton(text='Нет ❌', callback_data='btc_hydro_no')
 
 # Кнопка получить результат
-get_result = InlineKeyboardButton(text='Получить результат', callback_data='get_result')
+get_result = InlineKeyboardButton(text='Получить результат ✅', callback_data='get_result')
 
 # Инициализация списка кнопок
 main_menu_buttons = [[calculation], [fomo], [cheap_coins], [dashboard], [feedback_button]]

@@ -12,6 +12,7 @@ from fpdf import FPDF
 from datetime import datetime
 from decimal import Decimal, ROUND_HALF_EVEN
 import ccxt
+import re
 
 import callback_factory
 import config
@@ -26,39 +27,43 @@ router = Router()
 @router.message(CommandStart())
 async def cmd_start(message: Message,
                     state: FSMContext):
-    await message.answer(text="Добро пожаловать в бота-криптосоветчика! \nПо кнопке <b>'Сделать расчет'</b> "
+    await message.answer(text="Добро пожаловать в <b>crypto_advice_bot</b>! 👋\n\nПо кнопке <b>Сделать расчет</b> ✍️ "
                               "Вы можете посчитать наиболее выгодные инвестиции в майнинг-оборудование "
-                              "конкретно для Вас и Ваших условий. \nДля сомневающихся - по кнопке "
-                              "<b>'Сколько я уже мог заработать?'</b> Вы можете увидеть, сколько могли заработать, зайди Вы "
-                              "в майнинг раньше.\n"
-                              "По кнопке <b>'Как купить монеты дешевле рынка'</b> Вы сможете увидеть одну из стратегий "
-                              "майнинга крипты, позволяющая покупать любой актив на рынке с большим дисконтом.\n"
+                              "конкретно для Вас и Ваших условий. \n\nПо кнопке "
+                              "<b>Сколько я уже мог заработать ❓</b> Вы можете увидеть, сколько могли заработать, зайди Вы "
+                              "в майнинг раньше.\n\n"
+                              "По кнопке <b>Как купить монеты дешевле рынка 🛒</b> Вы сможете увидеть одну из стратегий "
+                              "майнинга крипты, позволяющая покупать любой актив на рынке с большим дисконтом.\n\n"
                               "Также можно ознакомиться с подробным дашбордом по "
-                              "майнинг-оборудованию на платформе <b>Yandex DataLens</b>.\n"
+                              "майнинг-оборудованию на платформе <b>Yandex DataLens</b> 📊.\n\n"
                               "Что Вы хотите сделать?",
                          reply_markup=keyboards.main_menu)
+    functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), message.from_user.id, 'start')
     await state.clear()
 
 
 @router.callback_query(F.data == 'return_to_main_menu')
 async def main_menu(callback: CallbackQuery,
                     state: FSMContext):
-    await callback.message.answer(
-        text="Добро пожаловать в бота-криптосоветчика! \nПо кнопке 'Сделать расчет' "
-             "Вы можете посчитать наиболее выгодные инвестиции в майнинг-оборудование "
-             "конкретно для Вас и Ваших условий. \nДля сомневающихся - по кнопке "
-             "'Сколько я уже мог заработать?' Вы можете увидеть, сколько могли заработать, зайди Вы "
-             "в майнинг раньше.\nТакже можно ознакомиться с подробным дашбордом по "
-             "майнинг-оборудованию на платформе DataLens.\n"
-             "Что Вы хотите сделать?",
-        reply_markup=keyboards.main_menu)
+    await callback.message.answer(text="Добро пожаловать в <b>crypto_advice_bot</b>! 👋\n\nПо кнопке <b>Сделать расчет</b> ✍️ "
+                              "Вы можете посчитать наиболее выгодные инвестиции в майнинг-оборудование "
+                              "конкретно для Вас и Ваших условий. \n\nПо кнопке "
+                              "<b>Сколько я уже мог заработать ❓</b> Вы можете увидеть, сколько могли заработать, зайди Вы "
+                              "в майнинг раньше.\n\n"
+                              "По кнопке <b>Как купить монеты дешевле рынка 🛒</b> Вы сможете увидеть одну из стратегий "
+                              "майнинга крипты, позволяющая покупать любой актив на рынке с большим дисконтом.\n\n"
+                              "Также можно ознакомиться с подробным дашбордом по "
+                              "майнинг-оборудованию на платформе <b>Yandex DataLens</b> 📊.\n\n"
+                              "Что Вы хотите сделать?",
+                         reply_markup=keyboards.main_menu)
     await state.clear()
 
 
 @router.callback_query(F.data == 'calculation')
 async def calculation(callback: CallbackQuery,
                       state: FSMContext):
-    await callback.message.answer(text="Окей, каким бюджетом Вы располагаете (в USD)? Введите целое "
+    functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'calculation')
+    await callback.message.answer(text="Окей, каким бюджетом Вы располагаете (в 💲)? \nВведите целое "
                                        "неотрицательное число")
     await state.set_state(fsm.GetUserData.insert_budget)
 
@@ -68,8 +73,8 @@ async def calculation(callback: CallbackQuery,
 async def calculation_budget_success(message: Message,
                                      state: FSMContext):
     await state.update_data(budget=message.text)
-    await message.answer(text="Сколько у Вас свободных мощностей для майнинга (в Вт*час)? Введите целое "
-                              "неотрицательное число (прим. 15000)")
+    await message.answer(text="Сколько у Вас свободных майнинговых мощностей ⚡ \n(в Вт*час)?\nВведите целое "
+                              "неотрицательное число (майнер в среднем потребляет <b>2000 - 3500 Вт*час</b>)")
     await state.set_state(fsm.GetUserData.insert_available_power)
 
 
@@ -87,7 +92,7 @@ async def calculation_budget_fail(message: Message,
 async def calculation_available_power_success(message: Message,
                                               state: FSMContext):
     await state.update_data(available_power=message.text)
-    await message.answer(text="Укажите Вашу цену электроэнергии (в USD) - через точку (прим. 0.05)")
+    await message.answer(text="Укажите Вашу цену ⚡ электроэнергии (в 💲) - через точку \n(в среднем в РФ цена за ЭЭ <b>0.02 - 0.07</b> $/кВт)")
     await state.set_state(fsm.GetUserData.insert_electro_price)
 
 
@@ -107,12 +112,12 @@ async def calculation_electro_price_success(message: Message,
     try:
         await state.update_data(electro_price=message.text)
         await message.answer(
-            text="Хорошо, с Вашими условиями разобрались. Давайте поговорим о Ваших предпочтениях. Какую "
+            text="Хорошо, с Вашими условиями разобрались 👌. \nДавайте поговорим о Ваших предпочтениях. \nКакую "
                  "из нижеперечисленных целей Вы считаете наиболее важной для себя?",
             reply_markup=keyboards.purpose_choice_menu)
         await state.set_state(fsm.GetUserData.insert_purpose)
     except ValueError:
-        await message.answer(text=f"То, что Вы ввели, не похоже на цену электроэнергии. Проверьте, что вводите цену "
+        await message.answer(text=f"То, что Вы ввели, не похоже на цену электроэнергии 🤔. Проверьте, что вводите цену "
                                   f"электроэнергии через точку и попробуйте еще раз",
                              reply_markup=keyboards.return_to_main_menu)
 
@@ -131,7 +136,7 @@ async def less_electricity_pay(callback: CallbackQuery,
                                state: FSMContext):
     await state.update_data(purpose=callback.data)
     await callback.message.answer(text="Укажите максимальную сумму в месяц, с которой Вы готовы расстаться для оплаты "
-                                       "электроэнергии (в USD)?")
+                                       "электроэнергии (в 💲)?")
     await state.set_state(fsm.GetUserData.insert_max_electricity_pay)
 
 
@@ -159,7 +164,7 @@ async def less_electricity_pay_fail(message: Message,
 async def coin_chosen_btc_380v(callback: CallbackQuery,
                                state: FSMContext):
     await state.update_data(coin=callback.data)
-    await callback.message.answer(text="Отличный выбор! Уточните, есть ли у Вас доступ к трехфазной сети?",
+    await callback.message.answer(text="Отличный выбор! Уточните, есть ли у Вас доступ к трехфазной сети ⚡?",
                                   reply_markup=keyboards.btc_380_menu)
     await state.set_state(fsm.GetUserData.insert_380v_for_btc)
 
@@ -168,7 +173,7 @@ async def coin_chosen_btc_380v(callback: CallbackQuery,
 async def coin_chosen_div_380v(callback: CallbackQuery,
                                state: FSMContext):
     await state.update_data(coin=callback.data)
-    await callback.message.answer(text="Отличный выбор! Уточните, есть ли у Вас доступ к трехфазной сети?",
+    await callback.message.answer(text="Отличный выбор! Уточните, есть ли у Вас доступ к трехфазной сети ⚡?",
                                   reply_markup=keyboards.btc_380_menu)
     await state.set_state(fsm.GetUserData.insert_380v_for_btc)
 
@@ -178,7 +183,7 @@ async def coin_chosen_btc_or_div_hydro(callback: CallbackQuery,
                                        state: FSMContext):
     await state.update_data(v380=callback.data)
     await callback.message.answer(text="Хорошо, и последний вопрос - есть ли у Вас возможность установить асики на "
-                                       "водяной системе охлаждения?",
+                                       "водяной системе охлаждения 🌊?",
                                   reply_markup=keyboards.btc_hydro_menu)
     await state.set_state(fsm.GetUserData.insert_hydro_for_btc)
 
@@ -518,7 +523,6 @@ async def get_result(callback: CallbackQuery,
 
             # Сохраняем PDF файл
             pdf.output(f"files/report_risk_id_{callback.from_user.id}.pdf")
-
             await callback.message.answer(text='По расчетам и Вашим вводным данным удалось составить две стратегии '
                                                'инвестирования в майнинг-оборудование - надежную и рискованную')
             await callback.message.answer(text='Надежная стратегия:')
@@ -553,10 +557,11 @@ async def get_result(callback: CallbackQuery,
                                                f" - <b>$ {int(rashod_risk)}</b>\n"
                                                f"Ежемесячная прибыль - <b>$ {int(dohod_risk - rashod_risk)}</b>\n"
                                                f"Окупаемость проекта - <b>{round(float(summa_oborud_risk / (dohod_risk - rashod_risk)), 1)} мес.</b>\n")
-            await callback.message.answer(text='Помните, что это - теоретический расчет, сделанный при текущем курсе '
-                                               'криптовалют, а также при текущей сложности сети. Халвинги криптовалют '
+            functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'calculation_result')
+            await callback.message.answer(text='<b>Помните, что это - теоретический расчет, сделанный при текущем курсе '
+                                               'криптовалют, а также при текущей сложности сети. \nХалвинги криптовалют '
                                                'также '
-                                               'не учитаны при расчетах.')
+                                               'не учитаны при расчетах.</b>')
             await callback.message.answer(
                 text='С более полной информацией об оборудовании Вы можете ознакомиться в моем '
                      'регулярно обновляющемся дашборде: '
@@ -669,6 +674,7 @@ async def get_result(callback: CallbackQuery,
                                                f" - <b>$ {int(rashod)}</b>\n"
                                                f"Ежемесячная прибыль - <b>$ {int(dohod - rashod)}</b>\n"
                                                f"Окупаемость проекта - <b>{round(float(summa_oborud / (dohod - rashod)), 1)} мес.</b>\n")
+            functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'calculation_result')
             await callback.message.answer(text='Помните, что это - теоретический расчет, сделанный при текущем курсе '
                                                'криптовалют, а также при текущей сложности сети. Халвинги криптовалют '
                                                'также '
@@ -785,6 +791,7 @@ async def get_result(callback: CallbackQuery,
                                                f" - <b>$ {int(rashod)}</b>\n"
                                                f"Ежемесячная прибыль - <b>$ {int(dohod - rashod)}</b>\n"
                                                f"Окупаемость проекта - <b>{round(float(summa_oborud / (dohod - rashod)), 1)} мес.</b>\n")
+            functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'calculation_result')
             await callback.message.answer(text='Помните, что это - теоретический расчет, сделанный при текущем курсе '
                                                'криптовалют, а также при текущей сложности сети. Халвинги криптовалют '
                                                'также '
@@ -943,6 +950,7 @@ async def get_result(callback: CallbackQuery,
                                                f" - <b>$ {int(rashod)}</b>\n"
                                                f"Ежемесячная прибыль - <b>$ {int(dohod - rashod)}</b>\n"
                                                f"Окупаемость проекта - <b>{round(float(summa_oborud / (dohod - rashod)), 1)} мес.</b>\n")
+            functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'calculation_result')
             await callback.message.answer(text='Помните, что это - теоретический расчет, сделанный при текущем курсе '
                                                'криптовалют, а также при текущей сложности сети. Халвинги криптовалют '
                                                'также '
@@ -963,12 +971,13 @@ async def get_result(callback: CallbackQuery,
 @router.callback_query(F.data == 'fomo')
 async def fomo_start(callback: CallbackQuery,
                      state: FSMContext):
-    await callback.message.answer(text="Добро пожаловать в FOMO-раздел!\nЗдесь Вы сможете наглядно увидеть (на "
-                                       "реальных данных), сколько денег Вы уже успели потерять, пока Вы думаете, "
-                                       "стоит ли заходить в майнинг. Расчеты сделаны уже по фактической сложности "
-                                       "сети.\nИтак, выберем наш асик. Какой выберете?\n"
-                                       "(текстом введите наименование интересующего Вас асика (прим."
-                                       " 'S21'))")
+    functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'fomo')
+    await callback.message.answer(text="Добро пожаловать в FOMO-раздел!\nЗдесь Вы сможете наглядно увидеть <b>(на "
+                                       "реальных данных)</b>, сколько денег Вы уже успели потерять, пока Вы думаете, "
+                                       "стоит ли заходить в майнинг. Расчеты сделаны уже <b>по фактической сложности "
+                                       "сети</b>.\nИтак, выберем наш асик. Какой выберете?\n"
+                                       "(текстом введите наименование интересующего Вас асика \n(<u><i>прим."
+                                       " 'S21'</i></u>))")
     await state.set_state(fsm.Fomo.insert_asic_name)
 
 
@@ -1005,7 +1014,7 @@ async def fomo_choose_date(callback: CallbackQuery,
     min_date = await functions.min_date_in_db(callback_data.item)
     await state.update_data(asic=callback_data.item)
     await state.update_data(date=min_date[0])
-    await callback.message.answer(text=f'С какой даты хотите посчитать?\nСамая ранняя доступная дата - '
+    await callback.message.answer(text=f'С какой даты хотите посчитать? 📅\nСамая ранняя доступная дата - '
                                        f'<b>{min_date[0]}</b>',
                                   reply_markup=keyboards.date_choose)
 
@@ -1013,7 +1022,7 @@ async def fomo_choose_date(callback: CallbackQuery,
 @router.callback_query(F.data == 'manual_date')
 async def fomo_insert_manual_date(callback: CallbackQuery,
                                   state: FSMContext):
-    await callback.message.answer(text='Введите дату в формате ГГГГ-ММ-ДД')
+    await callback.message.answer(text='Введите дату в формате ГГГГ-ММ-ДД 📅')
     await state.set_state(fsm.Fomo.insert_date)
 
 
@@ -1039,14 +1048,14 @@ async def fomo_insert_manual_date_check(message: Message,
 @router.message(StateFilter(fsm.Fomo.insert_date))
 async def fomo_insert_manual_date_check(message: Message,
                                         state: FSMContext):
-    await message.answer(text=f"То, что Вы ввели, не похоже на текст. Попробуйте еще раз",
+    await message.answer(text=f"То, что Вы ввели, не похоже на текст 🤔. Попробуйте еще раз",
                          reply_markup=keyboards.return_to_main_menu)
 
 
 @router.callback_query(F.data.in_(['early_date', 'manual_date_confirm_button']))
 async def fomo_insert_electricity_price(callback: CallbackQuery,
                                         state: FSMContext):
-    await callback.message.answer(text='И последнее - введите цену за киловатт электроэнергии в USD (прим. 0.05)')
+    await callback.message.answer(text='Укажите Вашу цену ⚡ электроэнергии (в 💲) - через точку \n(в среднем в РФ цена за ЭЭ <b>0.02 - 0.07</b> $/кВт)')
     await state.set_state(fsm.Fomo.insert_electricity)
 
 
@@ -1074,7 +1083,7 @@ async def fomo_summary_confirm(message: Message,
 
 @router.message(StateFilter(fsm.Fomo.insert_electricity))
 async def fomo_summary_confirm_fail(message: Message):
-    await message.answer(text=f"То, что Вы ввели, не похоже на цену электроэнергии. Попробуйте еще раз",
+    await message.answer(text=f"То, что Вы ввели, не похоже на цену электроэнергии 🤔. Попробуйте еще раз",
                          reply_markup=keyboards.return_to_main_menu)
 
 
@@ -1120,9 +1129,9 @@ async def fomo_calculation_start(callback: CallbackQuery,
                 days_of_mining = (datetime.now().date() - data['date']).days
                 await callback.message.answer(text=f"Асик: <b>{asic[0][0]}</b>\n"
                                                    f"Алгоритм: <b>{asic[0][3]}</b>\n\n"
-                                                   f"За период с <b>{data['date']}</b> по сегодняшний день Вам бы уже удалось намайнить: "
-                                                   f"<b>{crypto_sum_ltc} LTC - ${fiat_sum_ltc.quantize(Decimal('0.00'), rounding=ROUND_HALF_EVEN)} (текущий курс - {currency_ltc} LTC/USDT</b>,\n "
-                                                   f"<b>{crypto_sum_doge} DOGE - ${fiat_sum_doge.quantize(Decimal('0.00'), rounding=ROUND_HALF_EVEN)} (текущий курс - {currency_doge} DOGE/USDT.</b>"
+                                                   f"За период с <b>{data['date']}</b> по сегодняшний день Вам бы уже удалось намайнить: \n"
+                                                   f"<b>{crypto_sum_ltc} LTC - ${fiat_sum_ltc.quantize(Decimal('0.00'), rounding=ROUND_HALF_EVEN)} (текущий курс - {currency_ltc} USDT</b>),\n"
+                                                   f"<b>{crypto_sum_doge} DOGE - ${fiat_sum_doge.quantize(Decimal('0.00'), rounding=ROUND_HALF_EVEN)} (текущий курс - {currency_doge} USDT).</b>\n"
                                                    f"Оплата за электроэнергию составила бы <b>${int(electricity_pay)}</b>. \nИтого - прибыль <b>${((fiat_sum_ltc + fiat_sum_doge) - Decimal(electricity_pay)).quantize(Decimal('0.00'), rounding=ROUND_HALF_EVEN)}</b>\n\n"
                                                    f"Также стоит упомянуть и стоимость оборудования. \n"
                                                    f"Стоимость асика <b>{data['date']} - ${int(start_price)}</b>\n"
@@ -1139,19 +1148,21 @@ async def fomo_calculation_start(callback: CallbackQuery,
                         text=f"То есть, <b>{asic[0][0]} окупился бы за {(days_of_mining / (current_percent_payback / 100) / 30).quantize(Decimal('0.0'), rounding=ROUND_HALF_EVEN)} мес.</b> и сейчас работал бы в плюс!")
                 else:
                     await callback.message.answer(
-                        text=f"Расчетная окупаемость по текущему курсу составит <b>{(days_of_mining / (current_percent_payback / 100) / 30).quantize(Decimal('0.0'), rounding=ROUND_HALF_EVEN)} мес.</b>")
+                        text=f"Расчетная окупаемость по текущему курсу 💹 составит <b>{(days_of_mining / (current_percent_payback / 100) / 30).quantize(Decimal('0.0'), rounding=ROUND_HALF_EVEN)} мес.</b>")
+                functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id,
+                                       'fomo_result')
                 await callback.message.answer(
-                    text="Также не следует забывать, что <b>сложность майнинга стремительно растет</b> по"
+                    text="Также не следует забывать, что <b>сложность майнинга ⛏️ стремительно растет</b> по"
                          " всем популярным алгоритам, и <b>то количество крипты, которое Вы могли бы "
                          "намайнить сегодня будет больше, чем завтра (в большинстве случаев).</b> "
-                         "Но решать, конечно же, Вам!\n"
-                         "Рекомендую также ознакомиться <b>с дашбордом в BI-системе Yandex Datalens</b> - "
+                         "Но решать, конечно же, Вам!\n\n"
+                         "Рекомендую также ознакомиться <b>с дашбордом в BI-системе Yandex Datalens 📊</b> - "
                          "там Вы сможете сравнить различное оборудование между собой по окупаемости, "
                          "доходности и многим другим показателям! Вот ссылка: "
-                         "<u>https://datalens.yandex/kth6k05xlg9c8</u>\n"
+                         "<u>https://datalens.yandex/kth6k05xlg9c8</u>\n\n"
                          "Дашборд регулярно обновляется и дополняется. Также просьба оставлять Ваши "
                          "пожелания, идеи и замечания по боту и дашборду по кнопке <b>«Оставить "
-                         "комментарий»</b>.",
+                         "комментарий 💬»</b>.",
                     reply_markup=keyboards.fomo_end)
 
 
@@ -1190,8 +1201,8 @@ async def fomo_calculation_start(callback: CallbackQuery,
                 days_of_mining = (datetime.now().date() - data['date']).days
                 await callback.message.answer(text=f"Асик: <b>{asic[0][0]}</b>\n"
                                                    f"Алгоритм: <b>{asic[0][3]}</b>\n\n"
-                                                   f"За период с <b>{data['date']}</b> по сегодняшний день Вам бы уже удалось намайнить: <b>{crypto_sum} {currency}</b>, "
-                                                   f"что в долларовом эквиваленте по актуальному курсу <b>{currency_value} USDT/{currency}</b> составляет <b>${fiat_sum.quantize(Decimal('0.00'), rounding=ROUND_HALF_EVEN)}</b>.\n"
+                                                   f"За период с <b>{data['date']}</b> по сегодняшний день Вам бы уже удалось намайнить: \n<b>{crypto_sum} {currency}</b>, "
+                                                   f"что в долларовом эквиваленте по актуальному курсу <b>{currency_value} USDT</b> составляет <b>${fiat_sum.quantize(Decimal('0.00'), rounding=ROUND_HALF_EVEN)}</b>.\n"
                                                    f"Оплата за электроэнергию составила бы <b>${int(electricity_pay)}</b>. \nИтого - прибыль <b>${(fiat_sum - Decimal(electricity_pay)).quantize(Decimal('0.00'), rounding=ROUND_HALF_EVEN)}</b>\n\n"
                                                    f"Также стоит упомянуть и стоимость оборудования. \n"
                                                    f"Стоимость асика <b>{data['date']} - ${int(start_price)}</b>\n"
@@ -1209,18 +1220,20 @@ async def fomo_calculation_start(callback: CallbackQuery,
                 else:
                     await callback.message.answer(
                         text=f"Расчетная окупаемость по текущему курсу составит <b>{(days_of_mining / (current_percent_payback / 100) / 30).quantize(Decimal('0.0'), rounding=ROUND_HALF_EVEN)} мес.</b>")
+                functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id,
+                                       'fomo_result')
                 await callback.message.answer(
-                    text="Также не следует забывать, что <b>сложность майнинга стремительно растет</b> по"
+                    text="Также не следует забывать, что <b>сложность майнинга ⛏️ стремительно растет</b> по"
                          " всем популярным алгоритам, и <b>то количество крипты, которое Вы могли бы "
                          "намайнить сегодня будет больше, чем завтра (в большинстве случаев).</b> "
-                         "Но решать, конечно же, Вам!\n"
-                         "Рекомендую также ознакомиться <b>с дашбордом в BI-системе Yandex Datalens</b> - "
+                         "Но решать, конечно же, Вам!\n\n"
+                         "Рекомендую также ознакомиться <b>с дашбордом в BI-системе Yandex Datalens 📊</b> - "
                          "там Вы сможете сравнить различное оборудование между собой по окупаемости, "
                          "доходности и многим другим показателям! Вот ссылка: "
-                         "<u>https://datalens.yandex/kth6k05xlg9c8</u>\n"
+                         "<u>https://datalens.yandex/kth6k05xlg9c8</u>\n\n"
                          "Дашборд регулярно обновляется и дополняется. Также просьба оставлять Ваши "
                          "пожелания, идеи и замечания по боту и дашборду по кнопке <b>«Оставить "
-                         "комментарий»</b>.",
+                         "комментарий 💬»</b>.",
                     reply_markup=keyboards.fomo_end)
 
 
@@ -1237,7 +1250,8 @@ async def fomo_calculation_start(callback: CallbackQuery,
 @router.callback_query(F.data == 'feedback')
 async def feedback(callback: CallbackQuery,
                    state: FSMContext):
-    await callback.message.answer(f"Пожалуйста, введите Ваши сообщение (можно скринами, текстом, стикерами). \n"
+    functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'feedback')
+    await callback.message.answer(f"Пожалуйста, введите Ваши сообщение 💬 (можно скринами, текстом, стикерами). \n"
                                   f"Если хотите получить ответ на сообщение - оставьте также свой <b>@username</b>")
     await state.set_state(fsm.Feedback.insert_feedback)
 
@@ -1255,12 +1269,13 @@ async def feedback_success(message: Message,
 @router.callback_query(F.data == 'cheap_coins')
 async def cheap_start(callback: CallbackQuery,
                       state: FSMContext):
-    await callback.message.answer(text="Хотите ли Вы купить монеты дешевле, чем они стоят на рынке?"
-                                       "Благодаря майнингу у Вас есть такая возможность! Давайте сделаем небольшой "
-                                       "расчет, и Вы сами в этом убедитесь!\n"
+    functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id, 'cheap_coins')
+    await callback.message.answer(text="Хотите ли Вы купить монеты дешевле, чем они стоят на рынке? 🤔\n"
+                                       "Благодаря майнингу у Вас есть такая возможность! \nДавайте сделаем небольшой "
+                                       "расчет, и Вы сами в этом убедитесь! 🛒\n"
                                        "Итак, выберем наш майнер. Какой выберете?\n"
-                                       "(текстом введите наименование интересующего Вас асика (прим."
-                                       " 'S21'))")
+                                       "<i><u>(текстом введите наименование интересующего Вас асика (прим."
+                                       " 'S21'))</u></i>")
     await state.set_state(fsm.CheapCoins.insert_asic_name)
 
 
@@ -1295,7 +1310,7 @@ async def cheap_insert_electro(callback: CallbackQuery,
                                callback_data: callback_factory.CheapAsicsList,
                                state: FSMContext):
     await state.update_data(asic=callback_data.item)
-    await callback.message.answer(text='А теперь введите цену за киловатт электроэнергии в USD (прим. 0.05)')
+    await callback.message.answer(text='Укажите Вашу цену ⚡ электроэнергии (в 💲) - через точку \n(в среднем в РФ цена за ЭЭ <b>0.02 - 0.07</b> $/кВт)')
     await state.set_state(fsm.CheapCoins.insert_electricity)
 
 
@@ -1315,14 +1330,14 @@ async def cheap_summary_confirm(message: Message,
                              reply_markup=keyboards.calculation_start)
         await state.set_state(fsm.CheapCoins.get_result)
     except ValueError:
-        await message.answer(text=f"То, что Вы ввели, не похоже на цену электроэнергии. Проверьте, что вводите цену "
+        await message.answer(text=f"То, что Вы ввели, не похоже на цену электроэнергии 🤔. Проверьте, что вводите цену "
                                   f"электроэнергии через точку и попробуйте еще раз",
                              reply_markup=keyboards.return_to_main_menu)
 
 
 @router.message(StateFilter(fsm.CheapCoins.insert_electricity))
 async def cheap_summary_confirm_fail(message: Message):
-    await message.answer(text=f"То, что Вы ввели, не похоже на цену электроэнергии. Попробуйте еще раз",
+    await message.answer(text=f"То, что Вы ввели, не похоже на цену электроэнергии 🤔. Попробуйте еще раз",
                          reply_markup=keyboards.return_to_main_menu)
 
 
@@ -1349,10 +1364,6 @@ async def cheap_calculation_start(callback: CallbackQuery,
                     self_cost_1_usdt = ((df['energy_consumption'] / 1000 * 24 * float(data['electricity_price'])) /
                                         (df['fiat_profitability'] / df['specific_power_for_calculation'] * df[
                                             'correct_hash_rate'])).values[0]
-                    investments_for_100_usdt_per_day = (100 / (
-                        ((df['fiat_profitability'] / df['specific_power_for_calculation'] * df['correct_hash_rate']) -
-                         (float(data['electricity_price']) * df['energy_consumption'] / 1000 * 24))) * df[
-                                                            'price']).values[0]
                     exchange = ccxt.binance()
                     tickers = ['BTC', 'ETH', 'SOL', 'TON', 'BNB', 'APT', 'SUI', 'ARB', 'OP']
                     tickers_full = ['Bitcoin', 'Ethereum', 'Solana', 'Toncoin', 'Binance Coin', 'Aptos', 'Sui',
@@ -1363,61 +1374,94 @@ async def cheap_calculation_start(callback: CallbackQuery,
                     tickers_cheap_value = [round(ticker_value * self_cost_1_usdt, 2) for ticker_value in tickers_value]
                     currency_result = list(zip(tickers, tickers_full, tickers_value, tickers_cheap_value))
                     currency_string = '\n'.join([
-                                                    f"<b>{ticket[0]}</b> ({ticket[1]}) - Ваша цена <b>${ticket[3]}</b> (при рыночной цене ${ticket[2]})"
+                                                    f"<b>{ticket[0]}</b> ({ticket[1]}) - Ваша цена <b>${ticket[3]}</b> (по рынку ${ticket[2]})"
                                                     for ticket in currency_result])
                     await callback.message.bot.send_chat_action(
                         chat_id=callback.from_user.id,
                         action=ChatAction.TYPING)
                     await callback.message.answer(
                         text=f"Перед тем, как показать результат, необходимо убедиться, что все "
-                             f"одинаково хорошо понимают эту стратегию. Приведу следующий "
+                             f"одинаково хорошо понимают эту стратегию. \nПриведу следующий "
                              f"пример:")
                     await callback.message.answer(
-                        text=f"За месяц работы Ваш майнер добыл криптовалюты на <b>$500</b>, затратив "
-                             f"при этом электроэнергии на <b>$100</b>. Потратив на производство всего "
-                             f"$100, Вы за $500 продаете Вашу криптовалюту на биржах и "
+                        text=f"За месяц работы Ваш майнер добыл криптовалюты на <b>💲500</b>, затратив "
+                             f"при этом электроэнергии  на ⚡ <b>$100</b>. \nПотратив на производство всего "
+                             f"$100, Вы за 💲500 продаете Вашу криптовалюту на биржах и "
                              f"покупаете ту криптовалюту, которую готовы держать в долгосрок, "
-                             f"потратив всего $100. Иными словами, себестоимость одного "
+                             f"потратив всего $100. \nИными словами, себестоимость одного "
                              f"добытого криптодоллара для Вас составила $0.2, и абсолютно любую "
                              f"крипту Вы можете приобрести в <b>5 (!!!) раз</b> дешевле "
                              f"рыночной цены. \nА теперь к Вашему примеру:")
                     await callback.message.bot.send_chat_action(
                         chat_id=callback.from_user.id,
                         action=ChatAction.TYPING)
-                    time.sleep(3)
+                    time.sleep(5)
+                    await callback.message.bot.send_chat_action(
+                        chat_id=callback.from_user.id,
+                        action=ChatAction.TYPING)
                     await callback.message.answer(text=f"Майнер: <b>{asic[0][0]}</b>\n"
                                                        f"Алгоритм: <b>{asic[0][3]}</b>\n"
                                                        f"Цена за 1 кВт: <b>${data['electricity_price']}</b>\n\n"
                                                        f"Себестоимость добычи 1 USDT для {asic[0][0]} - "
                                                        f"<b>${round(self_cost_1_usdt, 2)}</b>, и вот Ваш актуальный курс "
-                                                       f"некоторых криптовалют:\n"
+                                                       f"некоторых криптовалют:\n\n"
                                                        f"{currency_string}")
                     await callback.message.bot.send_chat_action(
                         chat_id=callback.from_user.id,
                         action=ChatAction.TYPING)
-                    time.sleep(3)
+                    time.sleep(10)
+                    await callback.message.bot.send_chat_action(
+                        chat_id=callback.from_user.id,
+                        action=ChatAction.TYPING)
                     if self_cost_1_usdt > 1:
                         await callback.message.answer(
                             text=f"Сожалеем, но такая конфигурация не является окупаемой на текущий момент :(")
+                        functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id,
+                                               'cheap_coins')
                     else:
                         await callback.message.answer(
-                            text=f"P.S. Следует помнить, что Вы сможете покупать крипту <b>исключительно "
-                                 f"на ту сумму</b>, которую Вы потратили на электроэнергию, и, чтобы, "
-                                 f"к примеру, майнить в день на сумму $100, Вам придется "
-                                 f"<b>инвестировать в майнинг-оборудование на сумму ${round(investments_for_100_usdt_per_day, 2)}!</b>")
+                            text=f"P.S. Следует понимать, что данная стратегия работает <b>исключительно до того момента</b>, "
+                                 f"пока Вы продаете Ваш намайненный {re.search(r'\((.*?)\)', asic[0][3]).group(1)}"
+                                 f" и на деньги с продажи покупаете крипту.\nИ второй момент, который важно понимать.\n"
+                                 f"<b>Больше устройств -> больше плата за электроэнергию -> больше дешевых монет для продажи</b>.\n"
+                                 f"Если в Вашем арсенале имеется одно устройство мощностью 100 Ватт и Вы платите за электричество, скажем, "
+                                 f"$5 в месяц, то нетрудно догадаться, какое количество крипты Вам удастся купить "
+                                 f"(<u>спойлер: очень маленькое</u>).\n"
+                                 f"Поэтому предлагаю добавить еще совсем немного математики, чтобы Вы поняли порядок чисел:")
+                        functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id,
+                                           'cheap_coins_result')
+                        await callback.message.bot.send_chat_action(
+                            chat_id=callback.from_user.id,
+                            action=ChatAction.TYPING)
+                        time.sleep(3)
+                        await callback.message.bot.send_chat_action(
+                            chat_id=callback.from_user.id,
+                            action=ChatAction.TYPING)
+                        await callback.message.answer(
+                            text=f"Для того, чтобы в месяц этим способом покупать крипты, например, на $1000 "
+                                 f"(для Вас это ${round(1000 * round(self_cost_1_usdt, 2), 0)}) Вам необходимо купить асиков {asic[0][0]}"
+                                 f" на сумму ${round(((1000 * round(self_cost_1_usdt, 2) / (float(data['electricity_price']) * df['energy_consumption'] * 720 / 1000)) * df['price']).values[0], 0)}.\n"
+                                 f"<b>Это порядка {round((1000 * round(self_cost_1_usdt, 2) / (float(data['electricity_price']) * df['energy_consumption'] * 720 / 1000)).values[0], 1)} асиков</b>.")
+                        await callback.message.bot.send_chat_action(
+                            chat_id=callback.from_user.id,
+                            action=ChatAction.TYPING)
+                        time.sleep(3)
                     await callback.message.bot.send_chat_action(
                         chat_id=callback.from_user.id,
                         action=ChatAction.TYPING)
                     time.sleep(3)
+                    await callback.message.bot.send_chat_action(
+                        chat_id=callback.from_user.id,
+                        action=ChatAction.TYPING)
                     await callback.message.answer(
-                        text="P.P.S. Также не следует забывать, что <b>сложность майнинга стремительно растет</b> по"
+                        text="P.P.S. Также не следует забывать, что <b>сложность майнинга ⛏️ стремительно растет</b> по"
                              " всем популярным алгоритам, и <b>то количество крипты, которое Вы могли бы "
                              "намайнить сегодня будет больше, чем завтра (в большинстве случаев).</b> "
-                             "Но решать, конечно же, Вам!\n"
+                             "Но решать, конечно же, Вам!\n\n"
                              "Рекомендую также ознакомиться <b>с дашбордом в BI-системе Yandex Datalens</b> - "
                              "там Вы сможете сравнить различное оборудование между собой по окупаемости, "
                              "доходности и многим другим показателям! Вот ссылка: "
-                             "<u>https://datalens.yandex/kth6k05xlg9c8</u>\n"
+                             "<u>https://datalens.yandex/kth6k05xlg9c8</u>\n\n"
                              "Дашборд регулярно обновляется и дополняется. Также просьба оставлять Ваши "
                              "пожелания, идеи и замечания по боту и дашборду по кнопке <b>«Оставить "
                              "комментарий»</b>.",
@@ -1448,10 +1492,6 @@ async def cheap_calculation_start(callback: CallbackQuery,
                     self_cost_1_usdt = ((df['energy_consumption'] / 1000 * 24 * float(data['electricity_price'])) /
                                         (df['fiat_profitability'] / df['specific_power_for_calculation'] * df[
                                             'correct_hash_rate'])).values[0]
-                    investments_for_100_usdt_per_day = (100 / (
-                        ((df['fiat_profitability'] / df['specific_power_for_calculation'] * df['correct_hash_rate']) -
-                         (float(data['electricity_price']) * df['energy_consumption'] / 1000 * 24))) * df[
-                                                            'price']).values[0]
                     exchange = ccxt.binance()
                     tickers = ['BTC', 'ETH', 'SOL', 'TON', 'BNB', 'APT', 'SUI', 'ARB', 'OP']
                     tickers_full = ['Bitcoin', 'Ethereum', 'Solana', 'Toncoin', 'Binance Coin', 'Aptos', 'Sui',
@@ -1463,61 +1503,81 @@ async def cheap_calculation_start(callback: CallbackQuery,
                     tickers_cheap_value = [round(ticker_value * self_cost_1_usdt, 2) for ticker_value in tickers_value]
                     currency_result = list(zip(tickers, tickers_full, tickers_value, tickers_cheap_value))
                     currency_string = '\n'.join([
-                                                    f"<b>{ticket[0]}</b> ({ticket[1]}) - Ваша цена <b>${ticket[3]}</b> (при рыночной цене ${ticket[2]})"
+                                                    f"<b>{ticket[0]}</b> ({ticket[1]}) - Ваша цена <b>${ticket[3]}</b> (по рынку ${ticket[2]})"
                                                     for ticket in currency_result])
                     await callback.message.bot.send_chat_action(
                         chat_id=callback.from_user.id,
                         action=ChatAction.TYPING)
                     await callback.message.answer(
                         text=f"Перед тем, как показать результат, необходимо убедиться, что все "
-                             f"одинаково хорошо понимают эту стратегию. Приведу следующий "
+                             f"одинаково хорошо понимают эту стратегию. \nПриведу следующий "
                              f"пример:")
                     await callback.message.answer(
-                        text=f"За месяц работы Ваш майнер добыл криптовалюты на <b>$500</b>, затратив "
-                             f"при этом электроэнергии на <b>$100</b>. Потратив на производство всего "
-                             f"$100, Вы за $500 продаете Вашу криптовалюту на биржах и "
+                        text=f"За месяц работы Ваш майнер добыл криптовалюты на <b>💲500</b>, затратив "
+                             f"при этом электроэнергии  на ⚡ <b>$100</b>. \nПотратив на производство всего "
+                             f"$100, Вы за 💲500 продаете Вашу криптовалюту на биржах и "
                              f"покупаете ту криптовалюту, которую готовы держать в долгосрок, "
-                             f"потратив всего $100. Иными словами, себестоимость одного "
+                             f"потратив всего $100. \nИными словами, себестоимость одного "
                              f"добытого криптодоллара для Вас составила $0.2, и абсолютно любую "
                              f"крипту Вы можете приобрести в <b>5 (!!!) раз</b> дешевле "
                              f"рыночной цены. \nА теперь к Вашему примеру:")
                     await callback.message.bot.send_chat_action(
                         chat_id=callback.from_user.id,
                         action=ChatAction.TYPING)
-                    time.sleep(3)
+                    time.sleep(5)
+                    await callback.message.bot.send_chat_action(
+                        chat_id=callback.from_user.id,
+                        action=ChatAction.TYPING)
                     await callback.message.answer(text=f"Майнер: <b>{asic[0][0]}</b>\n"
                                                        f"Алгоритм: <b>{asic[0][3]}</b>\n"
                                                        f"Цена за 1 кВт: <b>${data['electricity_price']}</b>\n\n"
                                                        f"Себестоимость добычи 1 USDT для {asic[0][0]} - "
                                                        f"<b>${round(self_cost_1_usdt, 2)}</b>, и вот Ваш актуальный курс "
-                                                       f"некоторых криптовалют:\n"
+                                                       f"некоторых криптовалют:\n\n"
                                                        f"{currency_string}")
                     await callback.message.bot.send_chat_action(
                         chat_id=callback.from_user.id,
                         action=ChatAction.TYPING)
-                    time.sleep(3)
+                    time.sleep(10)
+                    await callback.message.bot.send_chat_action(
+                        chat_id=callback.from_user.id,
+                        action=ChatAction.TYPING)
                     if self_cost_1_usdt > 1:
                         await callback.message.answer(
                             text=f"Сожалеем, но такая конфигурация не является окупаемой на текущий момент :(")
+                        functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id,
+                                               'cheap_coins_result')
                     else:
                         await callback.message.answer(
-                            text=f"P.S. Следует помнить, что Вы сможете покупать крипту <b>исключительно "
-                                 f"на ту сумму</b>, которую Вы потратили на электроэнергию, и, чтобы, "
-                                 f"к примеру, майнить в день на сумму $100, Вам придется "
-                                 f"<b>инвестировать в майнинг-оборудование на сумму ${round(investments_for_100_usdt_per_day, 2)}!</b>")
-                    time.sleep(3)
+                            text=f"P.S. Следует понимать, что данная стратегия работает <b>исключительно до того момента</b>, "
+                                 f"пока Вы продаете Ваш намайненный {re.search(r'\((.*?)\)', asic[0][3]).group(1)}"
+                                 f" и на деньги с продажи покупаете крипту.\nИ второй момент, который важно понимать.\n"
+                                 f"<b>Больше устройств -> больше плата за электроэнергию -> больше дешевых монет для продажи</b>.\n"
+                                 f"Если в Вашем арсенале имеется одно устройство мощностью 100 Ватт и Вы платите за электричество, скажем, "
+                                 f"$5 в месяц, то нетрудно догадаться, какое количество крипты Вам удастся купить "
+                                 f"(<u>спойлер: очень маленькое</u>).\n"
+                                 f"Поэтому предлагаю добавить еще совсем немного математики, чтобы Вы поняли порядок чисел:")
+                        functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id,
+                                               'cheap_coins_result')
+                        time.sleep(3)
+                        await callback.message.answer(
+                            text=f"Для того, чтобы в месяц этим способом покупать крипты, например, на $1000 "
+                                 f"(для Вас это ${round(1000*round(self_cost_1_usdt, 2), 0)}) Вам необходимо купить асиков {asic[0][0]}"
+                                 f" на сумму ${round(((1000*round(self_cost_1_usdt, 2) / (float(data['electricity_price']) * df['energy_consumption'] * 720 / 1000)) * df['price']).values[0], 0)}.\n"
+                                 f"<b>Это порядка {round((1000*round(self_cost_1_usdt, 2) / (float(data['electricity_price']) * df['energy_consumption'] * 720 / 1000)).values[0], 1)} асиков</b>.")
+                        time.sleep(3)
                     await callback.message.bot.send_chat_action(
                         chat_id=callback.from_user.id,
                         action=ChatAction.TYPING)
                     await callback.message.answer(
-                        text="P.P.S. Также не следует забывать, что <b>сложность майнинга стремительно растет</b> по"
+                        text="P.P.S. Также не следует забывать, что <b>сложность майнинга ⛏️ стремительно растет</b> по"
                              " всем популярным алгоритам, и <b>то количество крипты, которое Вы могли бы "
                              "намайнить сегодня будет больше, чем завтра (в большинстве случаев).</b> "
-                             "Но решать, конечно же, Вам!\n"
+                             "Но решать, конечно же, Вам!\n\n"
                              "Рекомендую также ознакомиться <b>с дашбордом в BI-системе Yandex Datalens</b> - "
                              "там Вы сможете сравнить различное оборудование между собой по окупаемости, "
                              "доходности и многим другим показателям! Вот ссылка: "
-                             "<u>https://datalens.yandex/kth6k05xlg9c8</u>\n"
+                             "<u>https://datalens.yandex/kth6k05xlg9c8</u>\n\n"
                              "Дашборд регулярно обновляется и дополняется. Также просьба оставлять Ваши "
                              "пожелания, идеи и замечания по боту и дашборду по кнопке <b>«Оставить "
                              "комментарий»</b>.",
