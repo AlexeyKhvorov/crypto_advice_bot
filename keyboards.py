@@ -5,7 +5,7 @@ import callback_factory
 import functions
 
 # Кнопки главного меню
-calculation = InlineKeyboardButton(text='Сделать расчет майнинг-оборудования ✍️', callback_data='calculation')
+calculation = InlineKeyboardButton(text='Собрать свою майнинг-ферму ✍️', callback_data='calculation')
 fomo = InlineKeyboardButton(text='Сколько я мог заработать ❓', callback_data='fomo')
 cheap_coins = InlineKeyboardButton(text='Как купить монеты дешевле рынка? 🛒', callback_data='cheap_coins')
 dashboard = InlineKeyboardButton(text='Перейти в подробный дашборд 📊', url='https://datalens.yandex/kth6k05xlg9c8')
@@ -13,9 +13,9 @@ feedback_button = InlineKeyboardButton(text='Оставить комментар
 return_to_main_menu_button = InlineKeyboardButton(text='Вернуться в главное меню', callback_data='return_to_main_menu')
 
 # Кнопки целей пользователя
-quick_payback = InlineKeyboardButton(text='Как можно быстрее окупиться 💸', callback_data='quick_payback')
-highly_profit = InlineKeyboardButton(text='Иметь максимально возможный месячный доход 💰', callback_data='highly_profit')
-less_electricity_pay = InlineKeyboardButton(text='Меньше платить за электроэнергию ⚡',
+quick_payback = InlineKeyboardButton(text='Быстрая окупамость 💸', callback_data='quick_payback')
+highly_profit = InlineKeyboardButton(text='Максимальный доход 💰', callback_data='highly_profit')
+less_electricity_pay = InlineKeyboardButton(text='Экономия на электроэнергии ⚡',
                                             callback_data='less_electricity_pay')
 
 # Кнопки добываемых монет

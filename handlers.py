@@ -26,7 +26,7 @@ router = Router()
 @router.message(CommandStart())
 async def cmd_start(message: Message,
                     state: FSMContext):
-    await message.answer(text="Добро пожаловать в <b>crypto_advice_bot</b>! 👋\n\n - По кнопке <b>«Сделать расчет»</b> ✍️ "
+    await message.answer(text="Добро пожаловать в <b>crypto_advice_bot</b>! 👋\n\n - По кнопке <b>«Собрать свою майнинг-ферму»</b> ✍️ "
              "Вы можете посчитать наиболее выгодные инвестиции в майнинг-оборудование "
              "конкретно для Вас и Ваших условий. \n - По кнопке "
              "<b>«Сколько я уже мог заработать» ❓</b> Вы можете увидеть, сколько могли заработать, сколько могли заработать, начав майнить раньше.\n"
@@ -47,7 +47,7 @@ async def cmd_start(message: Message,
 async def main_menu(callback: CallbackQuery,
                     state: FSMContext):
     await callback.message.answer(
-        text="Добро пожаловать в <b>crypto_advice_bot</b>! 👋\n\n - По кнопке <b>«Сделать расчет»</b> ✍️ "
+        text="Добро пожаловать в <b>crypto_advice_bot</b>! 👋\n\n - По кнопке <b>«Собрать свою майнинг-ферму»</b> ✍️ "
              "Вы можете посчитать наиболее выгодные инвестиции в майнинг-оборудование "
              "конкретно для Вас и Ваших условий. \n - По кнопке "
              "<b>«Сколько я уже мог заработать» ❓</b> Вы можете увидеть, сколько могли заработать, сколько могли заработать, начав майнить раньше.\n"
@@ -78,7 +78,7 @@ async def calculation(callback: CallbackQuery,
 async def calculation_budget_success(message: Message,
                                      state: FSMContext):
     await state.update_data(budget=message.text)
-    await message.answer(text="Сколько у вас свободных майнинговых мощностей ⚡ \n(в Вт*час)?\nВведите целое "
+    await message.answer(text="Сколько у вас свободных майнинговых мощностей ⚡ (в Вт*час)?\nВведите целое "
                                  "неотрицательное число (майнер в среднем потребляет <b>2000 - 3500 Вт*час</b>)")
     await state.set_state(fsm.GetUserData.insert_available_power)
 
@@ -118,7 +118,7 @@ async def calculation_electro_price_success(message: Message,
     try:
         await state.update_data(electro_price=message.text)
         await message.answer(
-            text="Хорошо, с вашими условиями разобрались 👌. \nДавайте поговорим о ваших предпочтениях. \nКакую "
+            text="Хорошо, с вашими условиями разобрались 👌 \nДавайте поговорим о ваших предпочтениях. \nКакую "
                  "из нижеперечисленных целей считаете наиболее важной для себя?",
             reply_markup=keyboards.purpose_choice_menu)
         await state.set_state(fsm.GetUserData.insert_purpose)
@@ -1483,7 +1483,7 @@ async def cheap_calculation_start(callback: CallbackQuery,
                             action=ChatAction.TYPING)
                         await callback.message.answer(
                             text=f"Для того, чтобы в месяц этим способом покупать крипты, например, на $1000 "
-                                 f"<b>(для вас это ${round(1000 * round(self_cost_1_usdt, 2), 0)})</b> вам необходимо купить асиков {asic[0][0]}"
+                                 f"<b>(для вас это ${round(1000 * round(self_cost_1_usdt, 2), 0)})</b>, вам необходимо купить асиков {asic[0][0]}"
                                  f" на сумму ${round(((1000 * round(self_cost_1_usdt, 2) / (float(data['electricity_price']) * df['energy_consumption'] * 720 / 1000)) * df['price']).values[0], 0)}.\n"
                                  f"<b>Это порядка {round((1000 * round(self_cost_1_usdt, 2) / (float(data['electricity_price']) * df['energy_consumption'] * 720 / 1000)).values[0], 1)} асиков</b>.")
                         await callback.message.bot.send_chat_action(
@@ -1613,7 +1613,7 @@ async def cheap_calculation_start(callback: CallbackQuery,
                         time.sleep(3)
                         await callback.message.answer(
                             text=f"Для того, чтобы в месяц этим способом покупать крипты, например, на $1000 "
-                                 f"<b>(для вас это ${round(1000 * round(self_cost_1_usdt, 2), 0)})</b> вам необходимо купить асиков {asic[0][0]}"
+                                 f"<b>(для вас это ${round(1000 * round(self_cost_1_usdt, 2), 0)})</b>, вам необходимо купить асиков {asic[0][0]}"
                                  f" на сумму ${round(((1000 * round(self_cost_1_usdt, 2) / (float(data['electricity_price']) * df['energy_consumption'] * 720 / 1000)) * df['price']).values[0], 0)}.\n"
                                  f"<b>Это порядка {round((1000 * round(self_cost_1_usdt, 2) / (float(data['electricity_price']) * df['energy_consumption'] * 720 / 1000)).values[0], 1)} асиков</b>.")
                         time.sleep(3)
