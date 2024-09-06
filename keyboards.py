@@ -13,7 +13,7 @@ feedback_button = InlineKeyboardButton(text='Оставить комментар
 return_to_main_menu_button = InlineKeyboardButton(text='Вернуться в главное меню', callback_data='return_to_main_menu')
 
 # Кнопки целей пользователя
-quick_payback = InlineKeyboardButton(text='Быстрая окупамость 💸', callback_data='quick_payback')
+quick_payback = InlineKeyboardButton(text='Быстрая окупаемость 💸', callback_data='quick_payback')
 highly_profit = InlineKeyboardButton(text='Максимальный доход 💰', callback_data='highly_profit')
 less_electricity_pay = InlineKeyboardButton(text='Экономия на электроэнергии ⚡',
                                             callback_data='less_electricity_pay')
