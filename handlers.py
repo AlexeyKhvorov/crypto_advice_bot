@@ -26,7 +26,8 @@ router = Router()
 @router.message(CommandStart())
 async def cmd_start(message: Message,
                     state: FSMContext):
-    await message.answer(text="Добро пожаловать в <b>crypto_advice_bot</b>! 👋\n\n - По кнопке <b>«Собрать свою майнинг-ферму»</b> ✍️ "
+    await message.answer(
+        text="Добро пожаловать в <b>crypto_advice_bot</b>! 👋\n\n - По кнопке <b>«Собрать свою майнинг-ферму»</b> ✍️ "
              "Вы можете посчитать наиболее выгодные инвестиции в майнинг-оборудование "
              "конкретно для Вас и Ваших условий. \n - По кнопке "
              "<b>«Сколько я уже мог заработать» ❓</b> Вы можете увидеть, сколько могли заработать, сколько могли заработать, начав майнить раньше.\n"
@@ -79,7 +80,7 @@ async def calculation_budget_success(message: Message,
                                      state: FSMContext):
     await state.update_data(budget=message.text)
     await message.answer(text="Сколько у вас свободных майнинговых мощностей ⚡ (в Вт*час)?\nВведите целое "
-                                 "неотрицательное число (майнер в среднем потребляет <b>2000 - 3500 Вт*час</b>)")
+                              "неотрицательное число (майнер в среднем потребляет <b>2000 - 3500 Вт*час</b>)")
     await state.set_state(fsm.GetUserData.insert_available_power)
 
 
@@ -87,8 +88,8 @@ async def calculation_budget_success(message: Message,
 async def calculation_budget_fail(message: Message,
                                   state: FSMContext):
     await message.answer(text=f'К сожалению, то, что вы ввели, не похоже на целое положительное число 🤔 '
-                                 f'Попробуйте еще раз',
-                            reply_markup=keyboards.return_to_main_menu)
+                              f'Попробуйте еще раз',
+                         reply_markup=keyboards.return_to_main_menu)
     await state.clear()
 
 
@@ -106,8 +107,8 @@ async def calculation_available_power_success(message: Message,
 async def calculation_available_power_fail(message: Message,
                                            state: FSMContext):
     await message.answer(text=f'К сожалению, то, что вы ввели, не похоже на целое положительное число 🤔 '
-                                 f'Попробуйте еще раз',
-                            reply_markup=keyboards.return_to_main_menu)
+                              f'Попробуйте еще раз',
+                         reply_markup=keyboards.return_to_main_menu)
     await state.clear()
 
 
@@ -133,8 +134,8 @@ async def calculation_electro_price_success(message: Message,
 async def calculation_electro_price_fail(message: Message,
                                          state: FSMContext):
     await message.answer(text=f'К сожалению, то, что вы ввели, не похоже на целое положительное число 🤔 '
-                                 f'Попробуйте еще раз',
-                            reply_markup=keyboards.return_to_main_menu)
+                              f'Попробуйте еще раз',
+                         reply_markup=keyboards.return_to_main_menu)
     await state.clear()
 
 
@@ -155,8 +156,8 @@ async def less_electricity_pay_success(message: Message,
                                        state: FSMContext):
     await state.update_data(max_electricity_pay=message.text)
     await message.answer(text="Супер! С этим тоже разобрались! Может, вы хотели бы майнить какую-то конкретную"
-                                 " криптовалюту?",
-                            reply_markup=keyboards.coin_choice_menu)
+                              " криптовалюту?",
+                         reply_markup=keyboards.coin_choice_menu)
     await state.set_state(fsm.GetUserData.insert_coin)
 
 
@@ -164,8 +165,8 @@ async def less_electricity_pay_success(message: Message,
 async def less_electricity_pay_fail(message: Message,
                                     state: FSMContext):
     await message.answer(text=f'К сожалению, то, что вы ввели, не похоже на целое положительное число 🤔 '
-                                 f'Попробуйте еще раз',
-                            reply_markup=keyboards.return_to_main_menu)
+                              f'Попробуйте еще раз',
+                         reply_markup=keyboards.return_to_main_menu)
     await state.clear()
 
 
@@ -193,8 +194,8 @@ async def coin_chosen_btc_or_div_hydro(callback: CallbackQuery,
                                        state: FSMContext):
     await state.update_data(v380=callback.data)
     await callback.message.edit_text(text="Хорошо, и последний вопрос - есть ли у вас возможность установить асики на "
-                                       "водяной системе охлаждения 🌊?",
-                                  reply_markup=keyboards.btc_hydro_menu)
+                                          "водяной системе охлаждения 🌊?",
+                                     reply_markup=keyboards.btc_hydro_menu)
     await state.set_state(fsm.GetUserData.insert_hydro_for_btc)
 
 
@@ -203,8 +204,8 @@ async def coin_chosen_btc_or_div_final(callback: CallbackQuery,
                                        state: FSMContext):
     await state.update_data(hydro=callback.data)
     await callback.message.edit_text(text="Отлично, кажется, это все, что я хотел узнать. Нажмите кнопку 'Получить "
-                                       "результат', и я запущу расчет",
-                                  reply_markup=keyboards.get_result_menu)
+                                          "результат', и я запущу расчет",
+                                     reply_markup=keyboards.get_result_menu)
     await state.set_state(fsm.GetUserData.final_stage)
 
 
@@ -213,8 +214,8 @@ async def coin_chosen_final(callback: CallbackQuery,
                             state: FSMContext):
     await state.update_data(coin=callback.data)
     await callback.message.edit_text(text="Отлично, кажется, это все, что я хотел узнать. Нажмите кнопку 'Получить "
-                                       "результат', и я запущу расчет",
-                                  reply_markup=keyboards.get_result_menu)
+                                          "результат', и я запущу расчет",
+                                     reply_markup=keyboards.get_result_menu)
     await state.set_state(fsm.GetUserData.final_stage)
 
 
@@ -569,7 +570,7 @@ async def get_result(callback: CallbackQuery,
                                                f"Окупаемость проекта - <b>{round(float(summa_oborud_risk / (dohod_risk - rashod_risk)), 1)} мес.</b>\n")
             try:
                 functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id,
-                                   'calculation_result')
+                                       'calculation_result')
             except Exception as e:
                 pass
             await callback.message.answer(
@@ -1003,11 +1004,11 @@ async def fomo_start(callback: CallbackQuery,
     except Exception as e:
         pass
     await callback.message.edit_text(text="Добро пожаловать в FOMO-раздел!\nЗдесь вы сможете наглядно увидеть <b>(на "
-                                       "реальных данных)</b>, сколько денег вы уже успели потерять, пока вы думаете, "
-                                       "стоит ли заходить в майнинг. Расчеты сделаны уже <b>по фактической сложности "
-                                       "сети</b>.\nИтак, выберем наш асик. Какой выберете?\n"
-                                       "(текстом введите наименование интересующего вас асика \n(<u><i>прим."
-                                       " 'S21'</i></u>))")
+                                          "реальных данных)</b>, сколько денег вы уже успели потерять, пока вы думаете, "
+                                          "стоит ли заходить в майнинг. Расчеты сделаны уже <b>по фактической сложности "
+                                          "сети</b>.\nИтак, выберем наш асик. Какой выберете?\n"
+                                          "(текстом введите наименование интересующего вас асика \n(<u><i>прим."
+                                          " 'S21'</i></u>))")
     await state.set_state(fsm.Fomo.insert_asic_name)
 
 
@@ -1044,9 +1045,14 @@ async def fomo_choose_date(callback: CallbackQuery,
     min_date = await functions.min_date_in_db(callback_data.item)
     await state.update_data(asic=callback_data.item)
     await state.update_data(date=min_date[0])
+    try:
+        functions.writing_asics(callback.from_user.id, callback_data.item,
+                                datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    except Exception as e:
+        pass
     await callback.message.edit_text(text=f'С какой даты хотите посчитать? 📅\nСамая ранняя доступная дата - '
-                                       f'<b>{min_date[0]}</b>',
-                                  reply_markup=keyboards.date_choose)
+                                          f'<b>{min_date[0]}</b>',
+                                     reply_markup=keyboards.date_choose)
 
 
 @router.callback_query(F.data == 'manual_date')
@@ -1314,11 +1320,11 @@ async def cheap_start(callback: CallbackQuery,
     except Exception as e:
         pass
     await callback.message.edit_text(text="Хотите ли вы купить монеты дешевле, чем они стоят на рынке? 🤔\n"
-                                       "Благодаря майнингу у вас есть такая возможность! \nДавайте сделаем небольшой "
-                                       "расчет, и вы сами в этом убедитесь! 🛒\n"
-                                       "Итак, выберем наш майнер. Какой выберете?\n"
-                                       "<i><u>(текстом введите наименование интересующего Вас асика (прим."
-                                       " 'S21'))</u></i>")
+                                          "Благодаря майнингу у вас есть такая возможность! \nДавайте сделаем небольшой "
+                                          "расчет, и вы сами в этом убедитесь! 🛒\n"
+                                          "Итак, выберем наш майнер. Какой выберете?\n"
+                                          "<i><u>(текстом введите наименование интересующего Вас асика (прим."
+                                          " 'S21'))</u></i>")
     await state.set_state(fsm.CheapCoins.insert_asic_name)
 
 
@@ -1353,6 +1359,11 @@ async def cheap_insert_electro(callback: CallbackQuery,
                                callback_data: callback_factory.CheapAsicsList,
                                state: FSMContext):
     await state.update_data(asic=callback_data.item)
+    try:
+        functions.writing_asics(callback.from_user.id, callback_data.item,
+                                datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    except Exception as e:
+        pass
     await callback.message.edit_text(
         text='Укажите вашу цену ⚡ электроэнергии (в 💲) - через точку \n(в среднем в РФ цена за ЭЭ <b>0.02 - 0.07</b> $/кВт)')
     await state.set_state(fsm.CheapCoins.insert_electricity)
@@ -1541,9 +1552,10 @@ async def cheap_calculation_start(callback: CallbackQuery,
                     self_cost_1_usdt = ((df['energy_consumption'] / 1000 * 24 * float(data['electricity_price'])) /
                                         (df['fiat_profitability'] / df['specific_power_for_calculation'] * df[
                                             'correct_hash_rate'])).values[0]
-                    exchange = ccxt.binance()
-                    tickers = ['BTC', 'ETH', 'SOL', 'TON', 'BNB', 'APT', 'SUI', 'ARB', 'OP']
-                    tickers_full = ['Bitcoin', 'Ethereum', 'Solana', 'Toncoin', 'Binance Coin', 'Aptos', 'Sui',
+                    exchange = ccxt.bybit()
+                    tickers = ['BTC', 'ETH', 'SOL', 'AVAX', 'TON', 'BNB', 'APT', 'SUI', 'ARB', 'OP']
+                    tickers_full = ['Bitcoin', 'Ethereum', 'Solana', 'Avalance', 'Toncoin', 'Binance Coin', 'Aptos',
+                                    'Sui',
                                     'Arbitrum',
                                     'Optimism']
                     tickers_value = []

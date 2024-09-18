@@ -219,3 +219,17 @@ def writing_logs(datetime_log, tg_id, action):
     db_connection.commit()
     cursor.close()
     db_connection.close()
+
+
+def writing_asics(tg_id, asic, datetime_log):
+    db_connection = pymysql.connect(host=config.host_logs, database=config.database_logs,
+                                    user=config.user_logs, password=config.password_logs,
+                                    port=config.port_number_logs)
+    cursor = db_connection.cursor()
+
+    insert_query = f"INSERT INTO asics VALUES ('{tg_id}', '{asic}', '{datetime_log}');"
+    cursor.execute(insert_query)
+    # Фиксируем изменения и закрываем соединение с базой данных
+    db_connection.commit()
+    cursor.close()
+    db_connection.close()
