@@ -542,26 +542,23 @@ async def get_result(callback: CallbackQuery,
                 action=ChatAction.UPLOAD_DOCUMENT
             )
             file_path = f"files/report_safety_id_{callback.from_user.id}.pdf"
-            await callback.message.reply_document(document=FSInputFile(
-                path=file_path,
-                filename="Your_report_safety.pdf"
-            ))
             await callback.message.answer(text=f"Бюджет проекта - <b>$ {int(fsm_result['budget'])}</b>\n"
                                                f"Ежемесячный доход - <b>$ {int(dohod_safety)}</b>\n"
                                                f"Ежемесячные расходы на ЭЭ в <b>$ {fsm_result['electro_price']}/кВт</b>"
                                                f" - <b>$ {int(rashod_safety)}</b>\n"
                                                f"Ежемесячная прибыль - <b>$ {int(dohod_safety - rashod_safety)}</b>\n"
                                                f"Окупаемость проекта - <b>{round(float(summa_oborud_safety / (dohod_safety - rashod_safety)), 1)} мес.</b>\n")
+            await callback.message.reply_document(document=FSInputFile(
+                path=file_path,
+                filename="Your_report_safety.pdf"
+            ))
+
             await callback.message.answer(text='Рискованная стратегия:')
             await callback.message.bot.send_chat_action(
                 chat_id=callback.from_user.id,
                 action=ChatAction.UPLOAD_DOCUMENT
             )
             file_path = f"files/report_risk_id_{callback.from_user.id}.pdf"
-            await callback.message.reply_document(document=FSInputFile(
-                path=file_path,
-                filename="Your_report_risk.pdf"
-            ))
             await callback.message.answer(text=f"Бюджет проекта - <b>$ {int(fsm_result['budget'])}</b>\n"
                                                f"Ежемесячный доход - <b>$ {int(dohod_risk)}</b>\n"
                                                f"Ежемесячные расходы на ЭЭ в <b>$ {fsm_result['electro_price']}/кВт</b>"
@@ -573,6 +570,11 @@ async def get_result(callback: CallbackQuery,
                                        'calculation_result')
             except Exception as e:
                 pass
+            await callback.message.reply_document(document=FSInputFile(
+                path=file_path,
+                filename="Your_report_risk.pdf"
+            ))
+
             await callback.message.answer(
                 text='<b>Помните, что это - теоретический расчет, сделанный при текущем курсе '
                      'криптовалют, а также при текущей сложности сети. \nХалвинги криптовалют '
@@ -956,6 +958,17 @@ async def get_result(callback: CallbackQuery,
 
             # Сохраняем PDF файл
             pdf.output(f"files/report_id_{callback.from_user.id}.pdf")
+            await callback.message.answer(text=f"Бюджет проекта - <b>$ {int(fsm_result['budget'])}</b>\n"
+                                               f"Ежемесячный доход - <b>$ {int(dohod)}</b>\n"
+                                               f"Ежемесячные расходы на ЭЭ в <b>$ {fsm_result['electro_price']}/кВт</b>"
+                                               f" - <b>$ {int(rashod)}</b>\n"
+                                               f"Ежемесячная прибыль - <b>$ {int(dohod - rashod)}</b>\n"
+                                               f"Окупаемость проекта - <b>{round(float(summa_oborud / (dohod - rashod)), 1)} мес.</b>\n")
+            try:
+                functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id,
+                                       'calculation_result')
+            except Exception as e:
+                pass
             await callback.message.answer(text='Судя по расчетам и вашим вводным, это оборудование подойдет вам больше '
                                                'всего:')
             await callback.message.bot.send_chat_action(
@@ -968,17 +981,7 @@ async def get_result(callback: CallbackQuery,
                 filename="Your_report.pdf"
             ))
 
-            await callback.message.answer(text=f"Бюджет проекта - <b>$ {int(fsm_result['budget'])}</b>\n"
-                                               f"Ежемесячный доход - <b>$ {int(dohod)}</b>\n"
-                                               f"Ежемесячные расходы на ЭЭ в <b>$ {fsm_result['electro_price']}/кВт</b>"
-                                               f" - <b>$ {int(rashod)}</b>\n"
-                                               f"Ежемесячная прибыль - <b>$ {int(dohod - rashod)}</b>\n"
-                                               f"Окупаемость проекта - <b>{round(float(summa_oborud / (dohod - rashod)), 1)} мес.</b>\n")
-            try:
-                functions.writing_logs(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), callback.from_user.id,
-                                       'calculation_result')
-            except Exception as e:
-                pass
+
             await callback.message.answer(text='Помните, что это - теоретический расчет, сделанный при текущем курсе '
                                                'криптовалют, а также при текущей сложности сети. Халвинги криптовалют '
                                                'также '
