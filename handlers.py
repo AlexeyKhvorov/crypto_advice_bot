@@ -1334,19 +1334,24 @@ async def cheap_start(callback: CallbackQuery,
 @router.message(StateFilter(fsm.CheapCoins.insert_asic_name), F.text.len() > 1)
 async def cheap_insert_asic(message: Message,
                             state: FSMContext):
+    loading_message = await message.answer("⌛ Формирую клавиатуру...")
+    msg_id = loading_message.message_id
     is_asics = await functions.asic_list(message.text)
     if is_asics:
         if len(is_asics) > 15:
             await message.answer(text='Слишком много результатов поиска:(\n'
                                       'Попробуйте ввести название более конкретно',
                                  reply_markup=keyboards.return_to_main_menu)
+            await bot.delete_message(message.chat.id, msg_id)
         else:
             await message.answer(text='Окей, вот, что удалось найти по вашему запросу:',
                                  reply_markup=await keyboards.create_cheap_asic_list_keyboard(message.text))
+            await bot.delete_message(message.chat.id, msg_id)
     else:
         await message.answer(text='К сожалению, по вашему запросу не нашлось ни одного результата :(\n'
                                   'Попробуйте ввести название повторно',
                              reply_markup=keyboards.return_to_main_menu)
+        await bot.delete_message(message.chat.id, msg_id)
 
 
 @router.message(StateFilter(fsm.CheapCoins.insert_asic_name))
@@ -1402,6 +1407,8 @@ async def cheap_summary_confirm_fail(message: Message):
 @router.callback_query(F.data == 'calculation_start', StateFilter(fsm.CheapCoins.get_result))
 async def cheap_calculation_start(callback: CallbackQuery,
                                   state: FSMContext):
+    loading_message = await callback.message.answer("⌛ Выполняю расчет...")
+    msg_id = loading_message.message_id
     data = await state.get_data()
     asic = await functions.asic_list_accuracy(data['asic'])
     if asic:
@@ -1441,6 +1448,7 @@ async def cheap_calculation_start(callback: CallbackQuery,
                         text=f"Перед тем, как показать результат, необходимо убедиться, что все "
                              f"одинаково хорошо понимают эту стратегию. \nПриведу следующий "
                              f"пример:")
+                    await bot.delete_message(callback.message.chat.id, msg_id)
                     await callback.message.answer(
                         text=f"За месяц работы ваш майнер добыл криптовалюты на <b>$500</b>, затратив "
                              f"при этом электроэнергии  на ⚡ <b>$100</b>. \nПотратив на производство всего "
@@ -1576,6 +1584,7 @@ async def cheap_calculation_start(callback: CallbackQuery,
                         text=f"Перед тем, как показать результат, необходимо убедиться, что все "
                              f"одинаково хорошо понимают эту стратегию. \nПриведу следующий "
                              f"пример:")
+                    await bot.delete_message(callback.message.chat.id, msg_id)
                     await callback.message.answer(
                         text=f"За месяц работы ваш майнер добыл криптовалюты на <b>$500</b>, затратив "
                              f"при этом электроэнергии  на ⚡ <b>$100</b>. \nПотратив на производство всего "

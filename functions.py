@@ -74,6 +74,21 @@ async def asic_list(asic):
         db.close()
 
 
+async def asic_list_in_last_date():
+    db = pymysql.connect(host=config.host, database=config.database,
+                         user=config.user, password=config.password)
+    try:
+        with db.cursor() as cursor:
+            sql = "SELECT distinct name FROM mining_profitability_bot_view_last_date"
+            cursor.execute(sql)
+            result = cursor.fetchall()
+            return result
+
+    finally:
+        # Закрываем соединение
+        db.close()
+
+
 async def asic_list_accuracy(asic):
     db = pymysql.connect(host=config.host, database=config.database,
                          user=config.user, password=config.password)
