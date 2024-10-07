@@ -83,7 +83,7 @@ async def create_cheap_asic_list_keyboard(asic):
     last_asic_list_list = [t[0] for t in last_asic_list_tuple]
     for asic in asics:
         builder.row(InlineKeyboardButton(
-            text=f'{asic[0]}, {int(asic[2])} Вт, {asic[3]} {'❌' if asic[0] not in last_asic_list_list else '✅'}',
+            text=f"{asic[0]}, {int(asic[2])} Вт, {asic[3]} {'❌' if asic[0] not in last_asic_list_list else '✅'}",
             callback_data=callback_factory.CheapAsicsList(
                 item=asic[0]).pack()
         ))
